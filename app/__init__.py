@@ -21,5 +21,5 @@ lm = LoginManager(app)
 
 @lm.user_loader 
 def load_user(id):
-    return UserProfile.query.get(int(id)) 
+    return Users.query.get(int(id)) 
 
