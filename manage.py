@@ -13,24 +13,22 @@ manager.add_command('db', MigrateCommand)
 
 @manager.command 
 def create_users():
-    
-    Users.__table__.create(db.engine)
-    # UserRegister.__table__.create(db.engine)
-    # ProviderName.__table__.create(db.engine)
-    # SocialLogin.__table__.create(db.engine)
-    
-    # TodoItem.__table__.create(db.engine)
+    UsersProfile.__table__.create(db.engine)
+    UsersRegister.__table__.create(db.engine)
+    ProviderName.__table__.create(db.engine)
+    SocialLogin.__table__.create(db.engine)
+    TodoItem.__table__.create(db.engine)
     print "created all users tables" 
 
 @manager.command 
 def drop_users():
-    # TodoItem.__table__.drop(db.engine)
+    TodoItem.__table__.drop(db.engine)
    
-    # SocialLogin.__table__.drop(db.engine)
-    # ProviderName.__table__.drop(db.engine)
-    # UserRegister.__table__.drop(db.engine)
-    Users.__table__.drop(db.engine)
-    # UserProfile.__table__.drop(db.engine)
+    SocialLogin.__table__.drop(db.engine)
+    ProviderName.__table__.drop(db.engine)
+    UsersRegister.__table__.drop(db.engine)
+    # Users.__table__.drop(db.engine)
+    UsersProfile.__table__.drop(db.engine)
     print "dropped all users tables" 
 
 @manager.command 

@@ -7,7 +7,7 @@
     <div class="col-md-4 col-md-offset-4">
       <h1 class="text-center">Register</h1>
         <hr>
-        <form id="userForm" action="{{ url_for('register') }}" method="POST" name="register_user_form" onsubmit="return checkForm(this);">
+        <form id="userForm" action="{{ url_for('users.register') }}" method="POST" name="register_user_form" onsubmit="return checkForm(this);">
           {{ form.csrf_token }}
           <div class="form-group">
             {{ render_field_with_errors(form.username, class="form-control", placeholder="username...", **{'data-validation':'required','data-validation':'length', 'data-validation-length':'min4', 'data-validation-error-msg':'Pick a longer username'}) }}
@@ -26,11 +26,11 @@
           </div>
         </form>
         <hr>
-        <li class="text-muted">Already have an account? <a href="{{ url_for('login') }}">Login</a></li>
+        <li class="text-muted">Already have an account? <a href="{{ url_for('users.login') }}">Login</a></li>
       </div>
       <br>
-       <p><a href="{{ url_for('oauth_authorize', provider='facebook') }}">Login with Facebook</a></p>
-       <p><a href="{{ url_for('oauth_authorize', provider='twitter') }}">Login with Twitter</a></p>
+       <p><a href="{{ url_for('users.oauth_authorize', provider='facebook') }}">Login with Facebook</a></p>
+       <p><a href="{{ url_for('users.oauth_authorize', provider='twitter') }}">Login with Twitter</a></p>
       </div>
     </div>
   </div>

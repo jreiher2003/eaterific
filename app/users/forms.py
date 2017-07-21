@@ -2,17 +2,17 @@ from flask_wtf import FlaskForm
 from wtforms.validators import Email, Length, EqualTo, DataRequired 
 from wtforms import PasswordField, BooleanField, SubmitField, TextField 
 from wtforms.fields.html5 import EmailField 
-from app.users.models import UserRegister, SocialLogin 
+from app.users.models import UsersRegister, SocialLogin 
 
 def validate_username(form, field): 
-    user = UserRegister.query.filter_by(username=field.data).first()
+    user = UsersRegister.query.filter_by(username=field.data).first()
     if user:
         field.errors.append("Username already registered!")
         return False
     return True
 
 def validate_email(form, field):
-    user = UserRegister.query.filter_by(email=field.data).first()
+    user = UsersRegister.query.filter_by(email=field.data).first()
     if user:
         field.errors.append("Email already registered!")
         return False
