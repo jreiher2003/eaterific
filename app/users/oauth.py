@@ -1,5 +1,7 @@
 import json
 import random
+from string import letters
+import requests
 from rauth import OAuth1Service, OAuth2Service
 from flask import current_app, url_for, request, redirect, session
 
@@ -228,3 +230,84 @@ class GoogleLogin(OAuthSignIn):
             # last_name,
             # None
         )
+
+class FourSquareLogin(OAuthSignIn):
+    def __init__(self):
+        super(FourSquareLogin, self).__init__('foursquare')
+        self.service = OAuth2Service(
+                name='foursquare',
+                client_id=self.consumer_id,
+                client_secret=self.consumer_secret,
+                authorize_url='https://foursquare.com/oauth2/authenticate',
+                access_token_url='https://foursquare.com/oauth2/access_token',
+                base_url='https://api.foursquare.com/v2'
+        )
+
+    def authorize(self):
+        return redirect(self.service.get_authorize_url(
+                client_id= self.consumer_id,
+                response_type='code',
+                redirect_uri=self.get_callback_url()
+        ))
+
+    def callback(self):
+        if 'code' not in request.args:
+            return None, None, None#, None
+        data = {'code': request.args['code'],
+                      'grant_type': 'authorization_code',
+                      'redirect_uri': self.get_callback_url()}
+        print data
+        response = self.service.get_raw_access_token(data=data)
+        response = response.json()
+        print response
+        # oauth2_session = self.service.get_session(response['access_token'])
+        me = requests.get('https://api.foursquare.com/v2/users/self?oauth_token=%s&v=20170725' % response['access_token']).json()
+        fr = me['response']['user']
+        print fr 
+        return (
+            "foursquare$" + str(fr['id']), 
+            fr['firstName'] + " " + fr['lastName'], 
+            fr['contact']['email']
+            )
+
+class RedditLogin(OAuthSignIn):
+    def __init__(self):
+        super(RedditLogin, self).__init__('reddit')
+        self.service = OAuth2Service(
+                name='reddit',
+                client_id=self.consumer_id,
+                client_secret=self.consumer_secret,
+                authorize_url='https://ssl.reddit.com/api/v1/authorize',
+                access_token_url='https://ssl.reddit.com/api/v1/access_token',
+                base_url='https://oauth.reddit.com'
+        )
+
+    def random_string(self):
+        return "".join(random.choice(letters) for x in xrange(16))
+
+
+    def authorize(self):
+        state = self.random_string()
+        return redirect(self.service.get_authorize_url(
+                client_id=self.consumer_id,
+                response_type='code',
+                state=state,
+                redirect_uri=self.get_callback_url(),
+                user_agent='j3ffrey_',
+                duration='permanent',
+                scope='identity'
+        ))
+
+    def callback(self):
+        if 'code' not in request.args:
+            return None, None, None#, None
+        data = {'code': request.args['code'],
+                      'grant_type': 'authorization_code',
+                      'redirect_uri': self.get_callback_url()}
+        print data
+        response = self.service.get_raw_access_token(data=data)
+        response = response.json()
+        print response
+        headers = {"Authorization": "bearer" + response['access_token']}
+        me = requests.get("https://oauth.reddit.com/api/v1/me", headers=headers).json()
+        return (me["id"], me["name"], me["email"])

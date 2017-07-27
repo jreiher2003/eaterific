@@ -26,6 +26,14 @@ class BaseConfig(object):
         'linkedin': {
             'id': '785ik3n0buzw8l',
             'secret': '2guAiqJfvHkagvFO'
+        },
+        'foursquare': {
+            'id': 'NSMK1WFBH2UIAEDV1E3QAPFLPOA5HU0RMNAOFCP4JVQDLMPB',
+            'secret': 'VGCRYE3YXZKR0O2XYQNPDAMOS4KJZCLW0XUVP2DHD1BMPYLS'
+        },
+        'reddit': {
+            'id': 'p-ft1woSOtK0zA',
+            'secret': 'Zy7XnbiBLKarjZz3Ar3KINSYy3o',
         }
     }
 

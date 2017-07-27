@@ -18,7 +18,7 @@ class UsersProfile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     screen_name = db.Column(db.String(50))
     avatar = db.Column(db.String(), default="user.jpg")
-    email = db.Column(db.String(255))
+    email = db.Column(db.String(255), unique=True)
     date_created = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     date_modified = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
     last_login_at = db.Column(db.DateTime)
@@ -40,7 +40,7 @@ class UsersProfile(db.Model):
         return unicode(self.id)
 
 class UsersRegister(db.Model):
-    __tablename__ = 'user_register'
+    __tablename__ = 'users_register'
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), nullable=False, unique=True) 
@@ -91,5 +91,5 @@ class TodoItem(db.Model):
 event.listen(
     ProviderName.__table__, 'after_create',
     DDL(
-        """ INSERT INTO provider_name (id,name) VALUES(1,'facebook'),(2, 'google'),(3, 'github'), (4, 'linkedin'), (5, 'twitter'); """)
+        """ INSERT INTO provider_name (id,name) VALUES(1,'facebook'),(2, 'google'),(3, 'github'), (4, 'linkedin'), (5, 'twitter'), (6, 'foursquare'), (7, 'reddit'); """)
 )
