@@ -1,7 +1,7 @@
 import datetime
 from app import app, db
 from flask import Blueprint, render_template, redirect, url_for, flash, session, request
-from flask_login import logout_user, current_user, login_user
+from flask_login import logout_user, current_user, login_user, login_required
 from oauth import OAuthSignIn
 from models import *
 from .forms import * 
@@ -77,6 +77,53 @@ def logout():
 def forgot_password():
     return "forgot password"
 
+@users_blueprint.route('/my-login')
+def add_login_page():
+    connected_providers = db.session.query(ProviderName.name).join(SocialLogin).join(UsersProfile).filter_by(id=current_user.id).all()
+    subquery = db.session.query(ProviderName.name).join(SocialLogin).join(UsersProfile).filter_by(id=current_user.id).subquery()
+    unconnected_providers = db.session.query(ProviderName.name).filter(~ProviderName.name.in_(subquery)).all()
+    todos = TodoItem.query.filter_by(users_id=current_user.id).all()
+    return render_template('my-logins.html', connected_providers=connected_providers,
+                           unconnected_providers=unconnected_providers, todos=todos)
+
+@users_blueprint.route("/delete-user/", methods=["POST"])
+@login_required
+def delete_user():
+    if request.method == "POST":
+        db.session.query(UsersProfile).filter_by(id=current_user.id).delete()
+        db.session.query(SocialLogin).filter_by(users_id=current_user.id).delete()
+        db.session.query(UsersRegister).filter_by(users_id=current_user.id).delete()
+        db.session.query(TodoItem).filter_by(users_id=current_user.id).delete()
+        db.session.commit()
+        session.clear()
+        flash("You just deleted your account.", "danger")
+        return redirect(url_for('users.index'))
+
+@users_blueprint.route('/new-todo', methods=['GET', 'POST'])
+@login_required
+def new_todo():
+    if request.method == 'POST':
+        todo = TodoItem(
+            name=request.form['name'],
+            deadline_date=datetime.datetime.strptime(request.form['deadline_date'],"%m/%d/%Y").date(),
+            users_id=current_user.id)
+        db.session.add(todo)
+        db.session.commit()
+        return redirect(url_for('users.add_login_page'))
+    return render_template('new-todo.html', page='new-todo')
+
+@users_blueprint.route('/mark-done/<int:todo_id>', methods=['POST'])
+@login_required
+def mark_done(todo_id):
+    print todo_id
+    if request.method == 'POST':
+        todo = TodoItem.query.filter_by(id=todo_id).one()
+        print "line 113", todo.id, todo.name, todo.is_done
+        todo.is_done = True
+        db.session.add(todo)
+        db.session.commit()
+        return redirect(url_for('users.add_login_page'))
+
 
 @users_blueprint.route('/authorize/<provider>')
 def oauth_authorize(provider):
@@ -97,30 +144,67 @@ def oauth_callback(provider):
         flash('Authentication failed.')
         return redirect(url_for('users.index'))
     social_login = SocialLogin.query.filter_by(social_login_id=social_id).first()
-    # print social_login.id, social_login.users_id
     if social_login:
         print "if social"
-        users = UsersProfile.query.filter_by(id=social_login.users_id).one_or_none()
-        users.login_count += 1
-        users.last_login_ip = users.current_login_ip
-        users.last_login_at = users.current_login_at
-        users.current_login_ip = "10.0.0.1"
-        users.current_login_at = datetime.datetime.now()
-        db.session.add(users)
-        db.session.commit()
-        login_user(users, True)
+        if not current_user.is_active:
+            print "not user active"
+            # has account and users signs back in with social account
+            users = UsersProfile.query.filter_by(id=social_login.users_id).one_or_none()
+            users.login_count += 1
+            users.last_login_ip = users.current_login_ip
+            users.last_login_at = users.current_login_at
+            users.current_login_ip = "10.0.0.1"
+            users.current_login_at = datetime.datetime.now()
+            db.session.add(users)
+            db.session.commit()
+            login_user(users, True)
+        elif current_user.is_active:
+            if social_login.social_login_id == social_id:
+                print "if social_login.social_login_id == social_id"
+                td = TodoItem.query.filter_by(users_id=social_login.users_id).all()
+                if td:
+                    for t in td:
+                        t.users_id = current_user.id 
+                        db.session.add(t)
+                        db.session.commit()
+                social_login.users_id = current_user.id
+                db.session.add(social_login)
+                db.session.commit()
+            else:
+                print "current user active"
+                # has at least one account and is active and wants to connect more
+                user_profile = UsersProfile.query.filter_by(id=current_user.id).first()
+                provider_name = ProviderName.query.filter_by(name=provider).first()
+                print "else make new SocialLogin"
+                s_l = SocialLogin(social_login_id=social_id, name=username, email=email, users_id=user_profile.id, provider_name_id=provider_name.id)
+                db.session.add(s_l)
+                db.session.commit()
+            return redirect(url_for("users.add_login_page"))
     if not social_login:
         print "if not social"    
-        provider_name = ProviderName.query.filter_by(name=provider).one()
-        user_profile = UsersProfile(screen_name=username,email=email)
-        db.session.add(user_profile)
-        db.session.commit()
-        social = SocialLogin(social_login_id=social_id, name=username, email=email, provider_name_id=provider_name.id, users_id=user_profile.id)
-        db.session.add(social)
-        user_profile.current_login_at = user_profile.date_created
-        user_profile.current_login_ip = "10.0.0.2"
-        db.session.commit()
-        login_user(user_profile, True)
-    
+        if not current_user.is_active:
+            print "not user active"
+            # user logins in with social for first time and is not currently loggged in under any other account
+            provider_name = ProviderName.query.filter_by(name=provider).one()
+            user_profile = UsersProfile(screen_name=username,email=email)
+            db.session.add(user_profile)
+            db.session.commit()
+            check_exist_social_login_id = SocialLogin.query.filter_by(social_login_id=social_id).one_or_none()
+            if not check_exist_social_login_id: 
+                social = SocialLogin(social_login_id=social_id, name=username, email=email, provider_name_id=provider_name.id, users_id=user_profile.id)
+                db.session.add(social)
+                user_profile.current_login_at = user_profile.date_created
+                user_profile.current_login_ip = "10.0.0.2"
+                db.session.commit()
+                login_user(user_profile, True)
+        elif current_user.is_active:
+            print "current user active"
+            #has a basic account and is logged in and wants to connect social accounts.
+            user_profile = UsersProfile.query.filter_by(id=current_user.id).first()
+            provider_name = ProviderName.query.filter_by(name=provider).first()
+            social_login = SocialLogin(social_login_id=social_id, name=username, email=email, users_id=user_profile.id, provider_name_id=provider_name.id)
+            db.session.add(social_login)
+            db.session.commit()
+            return redirect(url_for("users.add_login_page"))
     return redirect(url_for('users.index'))
     
