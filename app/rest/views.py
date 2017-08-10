@@ -8,7 +8,11 @@ rest_blueprint = Blueprint("rest", __name__, template_folder="templates")
 @rest_blueprint.route("/")
 def index():
     state = State.query.all()
-    return render_template("state.html",state=state)
+    return render_template("front_page/front_page_index.html",state=state)
+
+@rest_blueprint.route("/about")
+def about():
+    return "this is the about page"
 
 @app.route("/<path:url_slug_state>/<int:state_id>/")
 def state_page(url_slug_state,state_id):

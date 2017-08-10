@@ -66,6 +66,7 @@ class SocialLogin(db.Model):
     social_login_id = db.Column(db.String(64), nullable=False, unique=True)
     name = db.Column(db.String(64))
     email = db.Column(db.String(255))
+    avatar = db.Column(db.String(255))
 
     provider_name_id = db.Column(db.Integer, db.ForeignKey('provider_name.id'))
     provider_name = db.relationship('ProviderName', foreign_keys=provider_name_id)

@@ -47,6 +47,11 @@ class TestConfig(BaseConfig):
 
 class DevelopmentConfig(BaseConfig):
     DEBUG = True
+    MAIL_SERVER = "smtp@gmail.com"
+    MAIL_USE_SSL = True
+    MAIL_PORT = 465
+    MAIL_USERNAME = "eaterific"
+    MAIL_PASSWORD = "eaterific123"
 
 class ProductionConfig(BaseConfig):
     DEBUG = False

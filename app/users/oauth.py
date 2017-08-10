@@ -56,20 +56,20 @@ class FacebookSignIn(OAuthSignIn):
 
     def callback(self):
         if 'code' not in request.args:
-            return None, None, None
+            return None, None, None, None
         oauth_session = self.service.get_auth_session(
             data={'code': request.args['code'],
                   'grant_type': 'authorization_code',
                   'redirect_uri': self.get_callback_url()}, decoder=json.loads
         )
-        me = oauth_session.get('me?fields=id,email,name,gender,age_range,picture').json()
-        print me['name'], me['gender'],me['age_range'],me['picture']['data']['url']
+        me = oauth_session.get('me?fields=id,email,name,picture').json()
+        print me['name'],me['picture']['data']['url']
         return (
             'facebook$' + me['id'],
             me.get('name'),  # Facebook does not provide
-                                            # username, so the email's user
+            me.get('email'),
+            me['picture']['data']['url'],                   # username, so the email's user
                                             # is used instead
-            me.get('email')
         )
 
 
@@ -96,16 +96,18 @@ class TwitterSignIn(OAuthSignIn):
     def callback(self):
         request_token = session.pop('request_token')
         if 'oauth_verifier' not in request.args:
-            return None, None, None
+            return None, None, None, None
         oauth_session = self.service.get_auth_session(
             request_token[0],
             request_token[1],
             data={'oauth_verifier': request.args['oauth_verifier']}
         )
         me = oauth_session.get('account/verify_credentials.json').json()
+        print me
         social_id = 'twitter$' + str(me.get('id'))
+        avatar = me.get("profile_image_url_https")
         username = me.get('screen_name')
-        return social_id, username, None   # Twitter does not provide email
+        return social_id, username, None, avatar   # Twitter does not provide email
 
 
 class LinkedinLogin(OAuthSignIn):
@@ -130,7 +132,7 @@ class LinkedinLogin(OAuthSignIn):
 
     def callback(self):
         if 'code' not in request.args:
-            return None, None, None#, None#, None, None
+            return None, None, None, None#, None, None
         data = {'code': request.args['code'],
                       'grant_type': 'authorization_code',
                       'redirect_uri': self.get_callback_url()}
@@ -138,18 +140,21 @@ class LinkedinLogin(OAuthSignIn):
         params = {'decoder': json_decoder,
                   'bearer_auth': False}
         session = self.service.get_auth_session(data=data, **params)
-        r = session.get('people/~:(id,email-address,first-name,last-name)', params={
+        r = session.get('people/~:(id,email-address,first-name,last-name,picture-url)', params={
                         'format': 'json',
                         'oauth2_access_token': session.access_token}, bearer_auth=False)
         me = r.json()
+        print me
         email = me['emailAddress']
         first_name = me['firstName']
         last_name = me['lastName']
+        avatar = me['pictureUrl']
         return (
             # 'linkedin',
             'linkedin$' + str(me['id']),
             first_name + ' ' + last_name,
             email,
+            avatar,
             # first_name,
             # last_name,
         )
@@ -175,17 +180,18 @@ class GithubLogin(OAuthSignIn):
 
     def callback(self):
         if 'code' not in request.args:
-            return None, None, None#, None#, None, None
+            return None, None, None, None#, None, None
         oauth_session = self.service.get_auth_session(
                 data={'code': request.args['code'],
                       'grant_type': 'authorization_code',
                       'redirect_uri': self.get_callback_url()})
-        me = oauth_session.get('user?fields=email,name,login').json()
+        me = oauth_session.get('user?fields=email,name,login,avatar_url').json()
         return (
             # 'github',
             'github$' + str(me['id']),
             me.get('name'),
             me.get('email'),
+            me.get("avatar_url")
             # me.get('login')
             # me.get('name').split()[0],
         )
@@ -219,16 +225,11 @@ class GoogleLogin(OAuthSignIn):
         response = response.json()
         oauth2_session = self.service.get_session(response['access_token'])
         me = oauth2_session.get('https://www.googleapis.com/oauth2/v1/userinfo').json()
-        first_name = me.get('given_name')
-        last_name = me.get('family_name')
         return (
-            # 'google',
             'google$' + str(me['id']),
             me.get('name'),
             me.get('email'),
-            # first_name,
-            # last_name,
-            # None
+            me.get('picture')
         )
 
 class FourSquareLogin(OAuthSignIn):
@@ -252,7 +253,7 @@ class FourSquareLogin(OAuthSignIn):
 
     def callback(self):
         if 'code' not in request.args:
-            return None, None, None#, None
+            return None, None, None, None
         data = {'code': request.args['code'],
                       'grant_type': 'authorization_code',
                       'redirect_uri': self.get_callback_url()}
@@ -264,10 +265,12 @@ class FourSquareLogin(OAuthSignIn):
         me = requests.get('https://api.foursquare.com/v2/users/self?oauth_token=%s&v=20170725' % response['access_token']).json()
         fr = me['response']['user']
         print fr 
+        avatar = fr['photo']['prefix']+ '64x64' +fr['photo']['suffix']
         return (
             "foursquare$" + str(fr['id']), 
             fr['firstName'] + " " + fr['lastName'], 
-            fr['contact']['email']
+            fr['contact']['email'],
+            avatar
             )
 
 class RedditLogin(OAuthSignIn):

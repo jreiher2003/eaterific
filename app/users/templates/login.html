@@ -24,22 +24,15 @@
       </form>
       <hr>
       <div class="form-group">
-        <div class="col-md-offset-2 col-md-10" style="border-top:1px solid black; padding-top:50px">
+        <div class="col-md-offset-2 col-md-10" style=""><!-- #border-top:1px solid black; padding-top:50px -->
          <p>
-           <a class="btn btn-block btn-social btn-facebook" href="{{ url_for('users.oauth_authorize', provider='facebook') }}">
-             <span class="fa fa-facebook"></span>
-             Log in with Facebook</a>
-           <a class="btn btn-block btn-social btn-github" href="{{ url_for('users.oauth_authorize', provider='github') }}">
-              <span class="fa fa-github"></span>
-              Log in with Github</a>
-           <a class="btn btn-block btn-social btn-google" href="{{ url_for('users.oauth_authorize', provider='google') }}">
-                <span class="fa fa-google"></span>
-                Log in with Google</a>
-           <a class="btn btn-block btn-social btn-linkedin" href="{{ url_for('users.oauth_authorize', provider='linkedin') }}">
-                  <span class="fa fa-linkedin"></span>
-                  Log in with LinkedIn</a>
-           <a class="btn btn-block btn-social btn-twitter" href="{{ url_for('users.oauth_authorize', provider='twitter') }}">             <span class="fa fa-linkedin"></span>
-                    Login with Twitter</a>
+           <a class="btn btn-block btn-social btn-facebook" href="{{ url_for('users.oauth_authorize', provider='facebook') }}"><span class="fa fa-facebook"></span>Log in with Facebook</a>
+           <a class="btn btn-block btn-social btn-github" href="{{ url_for('users.oauth_authorize', provider='github') }}"><span class="fa fa-github"></span>Log in with Github</a>
+           <a class="btn btn-block btn-social btn-google" href="{{ url_for('users.oauth_authorize', provider='google') }}"><span class="fa fa-google"></span>Log in with Google</a>
+           <a class="btn btn-block btn-social btn-linkedin" href="{{ url_for('users.oauth_authorize', provider='linkedin') }}"><span class="fa fa-linkedin"></span>Log in with LinkedIn</a>
+           <a class="btn btn-block btn-social btn-twitter" href="{{ url_for('users.oauth_authorize', provider='twitter') }}"><span class="fa fa-linkedin"></span>Login with Twitter</a>
+           <a class="btn btn-block btn-social btn-foursquare" href="{{ url_for('users.oauth_authorize', provider='foursquare') }}"><span class="fa fa-foursquare"></span>Login with FourSquare</a>
+           <a class="btn btn-block btn-social btn-reddit" href="{{ url_for('users.oauth_authorize', provider='reddit') }}"><span class="fa fa-reddit"></span>Login with Reddit</a>
           </p>
 
           </div>
