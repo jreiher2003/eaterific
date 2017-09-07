@@ -52,6 +52,7 @@ class DevelopmentConfig(BaseConfig):
     MAIL_PORT = 465
     MAIL_USERNAME = "eaterific"
     MAIL_PASSWORD = "eaterific123"
+    MAIL_DEFAULT_SENDER = "eaterific@gmail.com"
 
 class ProductionConfig(BaseConfig):
     DEBUG = False

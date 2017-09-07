@@ -18,7 +18,7 @@ class UsersProfile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     screen_name = db.Column(db.String(50))
     avatar = db.Column(db.String(), default="user.jpg")
-    email = db.Column(db.String(255), unique=True)
+    email = db.Column(db.String(255))#, unique=True
     date_created = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     date_modified = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
     last_login_at = db.Column(db.DateTime)

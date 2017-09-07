@@ -75,6 +75,7 @@ def logout():
     session.pop("session", None)
     flash("You have logged out.", "danger")
     referer = request.headers["Referer"]
+    print referer
     return redirect(referer)
 
 @users_blueprint.route("/forgot-password")
@@ -82,6 +83,7 @@ def forgot_password():
     return "forgot password"
 
 @users_blueprint.route('/profile')
+@login_required
 def user_profile():
     connected_providers = db.session.query(ProviderName.name).join(SocialLogin).join(UsersProfile).filter_by(id=current_user.id).all()
     subquery = db.session.query(ProviderName.name).join(SocialLogin).join(UsersProfile).filter_by(id=current_user.id).subquery()
