@@ -24,19 +24,11 @@ def state_page(url_slug_state,state_id):
 
 @app.route("/<path:url_slug_state>/<int:state_id>/<path:url_slug_city>/<int:city_metro_id>/page/<int:page>")
 def city_page(url_slug_state,state_id,url_slug_city,city_metro_id, page=1):
-    rest = RestaurantLinks.query.filter_by(state_id=state_id, city_metro_id=city_metro_id).paginate(page, 50, False)
-    # rest = db.session.query(RestaurantLinksCusine).join(Cusine).filter(RestaurantLinksCusine.restaurant_links_id == all_rest.id and RestaurantLinksCusine.cusine_id == Cusine.id).all()
-    # state_name = State.query.filter_by(id=state_id).one()
-    # city_name = CityMetro.query.filter_by(id=city_metro_id).one()
-    # all_cusine_city = RestaurantLinks.query.filter_by(state_id=state_id, city_metro_id=city_metro_id).join(RestaurantLinksCusine).join(Cusine).filter(RestaurantLinksCusine.cusine_id == Cusine.id).all()
-    # acc = []
-    # for a in all_cusine_city:
-    #     for c in a.cusine:
-    #         if c.name not in [x[0] for x in acc]:
-    #             acc.append((c.name,c.id,c.url_slug_cusine))
-    # acc = sorted(acc, key=lambda x: x[0])
-    return render_template('city_page.html',  rest=rest, url_slug_state=url_slug_state, state_id=state_id, url_slug_city=url_slug_city, city_metro_id=city_metro_id)
-    # , state_name=state_name.name,, city_name=city_name.city_name, ,, rest_total=city_name.r_total, all_cusine_city=all_cusine_city, acc=acc
+    rest__id = RestaurantLinks.query.filter_by(state_id=state_id, city_metro_id=city_metro_id).all()
+    # rest = RestaurantLinks.query.filter_by(state_id=state_id, city_metro_id=city_metro_id).paginate(page, 10, False)
+    # rest_cusine = db.session.query(RestaurantLinksCusine).join(Cusine).filter(RestaurantLinksCusine.restaurant_links_id == rest__id.id and RestaurantLinksCusine.cusine_id == Cusine.id).all()
+    rest = RestaurantLinks.query.filter_by(state_id=state_id, city_metro_id=city_metro_id).join(RestaurantLinksCusine).join(Cusine).filter(RestaurantLinksCusine.cusine_id == Cusine.id).order_by(asc(RestaurantLinks.rest_name)).paginate(page, 10, False)
+    return render_template('city_page.html', rest=rest, url_slug_state=url_slug_state, state_id=state_id, url_slug_city=url_slug_city, city_metro_id=city_metro_id)
 
 @app.route("/r/<path:url_slug_state>/<int:state_id>/<path:url_slug_city>/<int:city_metro_id>/<path:url_slug_rest>/<path:rest_id>/")
 def rest_page_city(url_slug_state, state_id, url_slug_city, city_metro_id, url_slug_rest, rest_id):
