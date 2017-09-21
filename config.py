@@ -53,7 +53,7 @@ class DevelopmentConfig(BaseConfig):
     MAIL_USERNAME = "eaterific"
     MAIL_PASSWORD = "eaterific123"
     MAIL_DEFAULT_SENDER = "eaterific@gmail.com"
-    SQLALCHEMY_ECHO = True
+    # SQLALCHEMY_ECHO = True
 
 class ProductionConfig(BaseConfig):
     DEBUG = False

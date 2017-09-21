@@ -87,6 +87,7 @@ class RestaurantLinks(db.Model):
     city_metro_id = db.Column(db.Integer, db.ForeignKey("city_metro.id"), index=True)
     city_metro = db.relationship("CityMetro", foreign_keys=city_metro_id)
     cusine = db.relationship('Cusine', secondary='restaurant_links_cusine', backref=db.backref('restaurant_links', lazy='dynamic', cascade="all, delete-orphan", single_parent=True))
+    rlc = db.relationship('RestaurantLinksCusine', backref=db.backref('restaurant_links', cascade="all, delete-orphan", single_parent=True))
     menu = db.relationship("Menu", uselist=False, backref="restaurant_links")
 
     @property 
@@ -109,6 +110,14 @@ class RestaurantLinksCusine(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     restaurant_links_id = db.Column(db.Integer, db.ForeignKey('restaurant_links.id', ondelete='CASCADE'), index=True)
     cusine_id = db.Column(db.Integer, db.ForeignKey('cusine.id', ondelete='CASCADE'), index=True)
+    cusine = db.relationship('Cusine', backref=db.backref('restaurant_links_cusine', lazy='dynamic', cascade="all, delete-orphan"))
+
+    state_id = db.Column(db.Integer, db.ForeignKey("state.id"), index=True)
+    state = db.relationship("State", foreign_keys=state_id)
+    county_id = db.Column(db.Integer, db.ForeignKey("county.id"), index=True)
+    county = db.relationship("County", foreign_keys=county_id) 
+    city_metro_id = db.Column(db.Integer, db.ForeignKey("city_metro.id"), index=True)
+    city_metro = db.relationship("CityMetro", foreign_keys=city_metro_id)
 
 class Menu(db.Model):
     __tablename__ = "menu"

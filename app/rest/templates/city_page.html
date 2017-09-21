@@ -42,14 +42,13 @@ city_page.html which has restaurants listed<br>
   </ul>
 </nav>
 
+{% for r in rest_cusine %}
+    <a href="{{ url_for('page_cusine_city', url_slug_state=url_slug_state, state_id=state_id, url_slug_city=url_slug_city, city_metro_id=city_metro_id, url_slug_cusine=r[1], cusine_id=r[2]) }}">{{ r[0] }}</a>
+{% endfor %}
 
 
 
 
 
 
-    {#{% for a,i,c in acc %}
-
-      <a href="{{ url_for('page_cusine_city', url_slug_state=url_slug_state, state_id=state_id, url_slug_city=url_slug_city, city_metro_id=city_metro_id, url_slug_cusine=c, cusine_id=i) }}">{{ a }}</a><br>
-    {% endfor %}#}
 {% endblock %}

@@ -24,11 +24,17 @@ def state_page(url_slug_state,state_id):
 
 @app.route("/<path:url_slug_state>/<int:state_id>/<path:url_slug_city>/<int:city_metro_id>/page/<int:page>")
 def city_page(url_slug_state,state_id,url_slug_city,city_metro_id, page=1):
-    rest__id = RestaurantLinks.query.filter_by(state_id=state_id, city_metro_id=city_metro_id).all()
-    # rest = RestaurantLinks.query.filter_by(state_id=state_id, city_metro_id=city_metro_id).paginate(page, 10, False)
-    # rest_cusine = db.session.query(RestaurantLinksCusine).join(Cusine).filter(RestaurantLinksCusine.restaurant_links_id == rest__id.id and RestaurantLinksCusine.cusine_id == Cusine.id).all()
-    rest = RestaurantLinks.query.filter_by(state_id=state_id, city_metro_id=city_metro_id).join(RestaurantLinksCusine).join(Cusine).filter(RestaurantLinksCusine.cusine_id == Cusine.id).order_by(asc(RestaurantLinks.rest_name)).paginate(page, 10, False)
-    return render_template('city_page.html', rest=rest, url_slug_state=url_slug_state, state_id=state_id, url_slug_city=url_slug_city, city_metro_id=city_metro_id)
+    rest = RestaurantLinks.query.filter_by(state_id=state_id, city_metro_id=city_metro_id).order_by(asc(RestaurantLinks.rest_name)).paginate(page, 50, False)
+    rc = RestaurantLinks.query.filter_by(state_id=state_id, city_metro_id=city_metro_id).all()
+    rest_cusine = []      
+    for r in rc:
+        for j in r.rlc:
+            pass
+        for x in r.cusine:
+            if x.name not in rest_cusine:
+                rest_cusine.append((x.name, x.url_slug_cusine, x.id))
+    rest_cusine = sorted(rest_cusine, key=lambda x: x[0])
+    return render_template('city_page.html', rest=rest, rest_cusine=rest_cusine, url_slug_state=url_slug_state, state_id=state_id, url_slug_city=url_slug_city, city_metro_id=city_metro_id)
 
 @app.route("/r/<path:url_slug_state>/<int:state_id>/<path:url_slug_city>/<int:city_metro_id>/<path:url_slug_rest>/<path:rest_id>/")
 def rest_page_city(url_slug_state, state_id, url_slug_city, city_metro_id, url_slug_rest, rest_id):
@@ -39,7 +45,7 @@ def rest_page_city(url_slug_state, state_id, url_slug_city, city_metro_id, url_s
 
 @app.route("/c/<path:url_slug_state>/<int:state_id>/<path:url_slug_city>/<int:city_metro_id>/<path:url_slug_cusine>/<path:cusine_id>/")
 def page_cusine_city(url_slug_state, state_id, url_slug_city, city_metro_id, url_slug_cusine, cusine_id):
-    rest_c = RestaurantLinks.query.filter_by(state_id=state_id, city_metro_id=city_metro_id).join(RestaurantLinksCusine).join(Cusine).filter(RestaurantLinksCusine.cusine_id == cusine_id).all()
+    rest_c = RestaurantLinks.query.filter_by(state_id=state_id, city_metro_id=city_metro_id).join(RestaurantLinksCusine).join(Cusine).filter(RestaurantLinksCusine.cusine_id == cusine_id).order_by(asc(RestaurantLinks.rest_name)).all()
     cusine_name = Cusine.query.filter_by(id=cusine_id).one()
     return render_template('page_cusine_city.html', rest_c=rest_c, url_slug_state=url_slug_state, state_id=state_id, url_slug_city=url_slug_city, city_metro_id=city_metro_id, url_slug_cusine=url_slug_cusine, cusine_id=cusine_id, cusine_name=cusine_name.name)
 
