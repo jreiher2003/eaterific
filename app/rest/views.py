@@ -26,14 +26,15 @@ def state_page(url_slug_state,state_id):
 def city_page(url_slug_state,state_id,url_slug_city,city_metro_id, page=1):
     rest = RestaurantLinks.query.filter_by(state_id=state_id, city_metro_id=city_metro_id).order_by(asc(RestaurantLinks.rest_name)).paginate(page, 50, False)
     rc = RestaurantLinks.query.filter_by(state_id=state_id, city_metro_id=city_metro_id).all()
-    rest_cusine = []      
+    rest_cusine1 = []      
     for r in rc:
         for j in r.rlc:
             pass
         for x in r.cusine:
-            if x.name not in rest_cusine:
-                rest_cusine.append((x.name, x.url_slug_cusine, x.id))
-    rest_cusine = sorted(rest_cusine, key=lambda x: x[0])
+            rest_cusine1.append([x.name, x.url_slug_cusine, x.id])
+    import itertools 
+    k = sorted(rest_cusine1)
+    rest_cusine = [k[i] for i in range(len(k)) if i == 0 or k[i] != k[i-1]]# removes dups  
     return render_template('city_page.html', rest=rest, rest_cusine=rest_cusine, url_slug_state=url_slug_state, state_id=state_id, url_slug_city=url_slug_city, city_metro_id=city_metro_id)
 
 @app.route("/r/<path:url_slug_state>/<int:state_id>/<path:url_slug_city>/<int:city_metro_id>/<path:url_slug_rest>/<path:rest_id>/")
