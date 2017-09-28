@@ -19,14 +19,14 @@ class MetroAssoc(db.Model):
     name = db.Column(db.String)
     metro_link = db.Column(db.String) 
     state_id = db.Column(db.Integer, db.ForeignKey("state.id"), index=True)
-    state = db.relationship("State", foreign_keys=state_id)
+    state = db.relationship("State", foreign_keys=[state_id])
 
 class County(db.Model):
     __tablename__ = "county"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     state_id = db.Column(db.Integer, db.ForeignKey("state.id"), index=True)
-    state = db.relationship("State", foreign_keys=state_id) 
+    state = db.relationship("State", foreign_keys=[state_id]) 
 
     @property 
     def url_slug_county(self):
@@ -41,9 +41,9 @@ class CityMetro(db.Model):
     metro_area = db.Column(db.Boolean)
     r_total = db.Column(db.Integer)
     state_id = db.Column(db.Integer, db.ForeignKey("state.id"), index=True)
-    state = db.relationship("State", foreign_keys=state_id)
+    state = db.relationship("State", foreign_keys=[state_id])
     county_id = db.Column(db.Integer, db.ForeignKey("county.id"), index=True)
-    county = db.relationship("County", foreign_keys=county_id) 
+    county = db.relationship("County", foreign_keys=[county_id]) 
 
     @property 
     def url_slug_city(self):
