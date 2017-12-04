@@ -5,6 +5,7 @@ from flask_login import logout_user, current_user, login_user, login_required
 from oauth import OAuthSignIn
 from models import *
 from .forms import * 
+from .utils import roles_required 
 
 
 users_blueprint = Blueprint("users", __name__, template_folder="templates") 
@@ -45,6 +46,7 @@ def login():
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
+        user_basic = db.session.query(Role).filter_by(name="userbasic").one()
         users = UsersProfile(
             screen_name=form.username.data,
             email=form.email.data,
@@ -53,6 +55,9 @@ def register():
             current_login_at = datetime.datetime.now(),
             )
         db.session.add(users)
+        db.session.commit()
+        users_roles = UserRoles(user_id=users.id, role_id=user_basic.id)
+        db.session.add(users_roles)
         db.session.commit()
         user_register = UsersRegister(
             username = form.username.data,
@@ -64,11 +69,12 @@ def register():
         db.session.commit()
         login_user(users,True)
         flash("Welcome <strong>%s</strong> to Menu App. Please go to your inbox and confirm your email." % (user_register.username), "success")
-        return redirect(url_for("users.index"))
+        return redirect(url_for("rest.index"))
     return render_template("register.html",form=form)
 
 
 @users_blueprint.route('/logout')
+@login_required
 def logout():
     logout_user()
     session.pop("logged_in", None)
@@ -84,6 +90,7 @@ def forgot_password():
 
 @users_blueprint.route('/profile')
 @login_required
+@roles_required("userbasic")
 def user_profile():
     connected_providers = db.session.query(ProviderName.name).join(SocialLogin).join(UsersProfile).filter_by(id=current_user.id).all()
     subquery = db.session.query(ProviderName.name).join(SocialLogin).join(UsersProfile).filter_by(id=current_user.id).subquery()

@@ -24,7 +24,7 @@ def state_page(url_slug_state,state_id):
 
 @app.route("/<path:url_slug_state>/<int:state_id>/<path:url_slug_city>/<int:city_metro_id>/page/<int:page>")
 def city_page(url_slug_state,state_id,url_slug_city,city_metro_id, page=1):
-    rest = RestaurantLinks.query.filter_by(state_id=state_id, city_metro_id=city_metro_id).order_by(asc(RestaurantLinks.rest_name)).paginate(page, 50, False)
+    rest = RestaurantLinks.query.filter_by(state_id=state_id, city_metro_id=city_metro_id).order_by(asc(RestaurantLinks.rest_name)).paginate(page, 40, False)
     rc = RestaurantLinks.query.filter_by(state_id=state_id, city_metro_id=city_metro_id).all()
     rest_cusine1 = []      
     for r in rc:

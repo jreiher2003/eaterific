@@ -13,22 +13,24 @@ manager.add_command('db', MigrateCommand)
 
 @manager.command 
 def create_users():
-    UsersProfile.__table__.create(db.engine)
-    UsersRegister.__table__.create(db.engine)
-    ProviderName.__table__.create(db.engine)
-    SocialLogin.__table__.create(db.engine)
-    TodoItem.__table__.create(db.engine)
+    UsersProfile.__table__.create(db.engine, checkfirst=True)
+    Role.__table__.create(db.engine, checkfirst=True)
+    UserRoles.__table__.create(db.engine, checkfirst=True)
+    UsersRegister.__table__.create(db.engine, checkfirst=True)
+    ProviderName.__table__.create(db.engine, checkfirst=True)
+    SocialLogin.__table__.create(db.engine, checkfirst=True)
+    TodoItem.__table__.create(db.engine, checkfirst=True)
     print "created all users tables" 
 
 @manager.command 
 def drop_users():
-    TodoItem.__table__.drop(db.engine)
-   
-    SocialLogin.__table__.drop(db.engine)
-    ProviderName.__table__.drop(db.engine)
-    UsersRegister.__table__.drop(db.engine)
-    # Users.__table__.drop(db.engine)
-    UsersProfile.__table__.drop(db.engine)
+    TodoItem.__table__.drop(db.engine,checkfirst=True)
+    SocialLogin.__table__.drop(db.engine, checkfirst=True)
+    ProviderName.__table__.drop(db.engine, checkfirst=True)
+    UsersRegister.__table__.drop(db.engine, checkfirst=True)
+    UserRoles.__table__.drop(db.engine, checkfirst=True)
+    Role.__table__.drop(db.engine, checkfirst=True)
+    UsersProfile.__table__.drop(db.engine, checkfirst=True)
     print "dropped all users tables" 
 
 @manager.command 
