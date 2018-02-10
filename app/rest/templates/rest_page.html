@@ -31,7 +31,7 @@ rest page<br><br>
     {{ rest.city_metro_id }}<br>
 
 <hr>
-<h1>{{ menu_name.name }}</h2>
+{#<h1>{{ menu_name.name }}</h2>
 {{ cats }}<br>
 {% for c in cats %}
     {% for i in c.category %}
@@ -42,7 +42,7 @@ rest page<br><br>
                 {{ x.description }}<br>
                 {{ x.price }}<br><br>
             {% endif %}
-        {% endfor %}
+        {% endfor %}  #}
             <br>
     {% endfor %}
 {% endfor %}
