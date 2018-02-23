@@ -42,10 +42,40 @@ rest page<br><br>
                 {{ x.description }}<br>
                 {{ x.price }}<br><br>
             {% endif %}
-        {% endfor %}  #}
+        {% endfor %}  
             <br>
     {% endfor %}
-{% endfor %}
+{% endfor %}#}
+
+
+{% for m in menu %}
+    <h2>{{ m.name }} </h2>
+
+   {% for s in section %}
+      {% if m.id == s.menu_id %}
+        <h4>{{ s.name }}</h4>
+
+        {% for mi in menu_items %}
+            {% if s.id == mi.section_id %}
+                <b>{{ mi.name }}</b>,
+
+                {% for ip in item_price %}
+                    {% if mi.id == ip.menu_item_id %}
+                        <i>{{ ip.price_value }}</i>, <i>{{ ip.price_title}}</i><br>
+                    {% endif %}
+                {% endfor %}
+                           
+                {% for ia in item_addon %}
+                    {% if mi.id == ia.menu_item_id %}
+                        {{ ia.addon_title.encode("utf-8").decode("utf-8") }}, {{ ia.addon_value }}<br>
+                    {% endif %}
+                {% endfor %}
+
+            {% endif %}
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+{% endfor %} 
 
 
 

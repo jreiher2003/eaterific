@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os 
 from flask import Flask 
 from flask_sqlalchemy import SQLAlchemy 
@@ -12,6 +13,8 @@ db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 manager = Manager(app) 
 mail = Mail(app)
+
+
 
 from app.users.views import users_blueprint 
 app.register_blueprint(users_blueprint) 

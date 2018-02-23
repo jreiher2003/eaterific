@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 from app import db
 from slugify import slugify
@@ -77,6 +78,7 @@ class Restaurant(db.Model):
     state_id = db.Column(db.Integer, db.ForeignKey("state.id"), index=True)
     county_id = db.Column(db.Integer, db.ForeignKey("county.id"), index=True)
     city_id = db.Column(db.Integer, db.ForeignKey("city.id"), index=True)
+    cusine = db.relationship('Cusine', secondary='restaurant_cusine', backref=db.backref('restaurant', lazy='dynamic', cascade="all, delete-orphan", single_parent=True))
     menu = db.relationship("Menu")
     
     @property 
@@ -137,6 +139,7 @@ class MenuItem(db.Model):
     section_id = db.Column(db.Integer, db.ForeignKey('section.id', ondelete='CASCADE'), index=True)
     restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurant.id', ondelete='CASCADE'), index=True)
     price_items = db.relationship("ItemPrice")
+    addon_items = db.relationship("ItemAddon")
 
 class ItemPrice(db.Model):
     __tablename__ = "item_price"
@@ -144,8 +147,8 @@ class ItemPrice(db.Model):
     price_title = db.Column(db.String)
     price_value = db.Column(db.String)
     menu_id = db.Column(db.Integer, db.ForeignKey('menu.id', ondelete='CASCADE'), index=True)
-    section_id = db.Column(db.Integer, db.ForeignKey('section.id', ondelete='CASCADE'), index=True)
     restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurant.id', ondelete='CASCADE'), index=True)
+    section_id = db.Column(db.Integer, db.ForeignKey('section.id', ondelete='CASCADE'), index=True)
     menu_item_id = db.Column(db.Integer, db.ForeignKey('menu_item.id', ondelete='CASCADE'), index=True) 
 
 class ItemAddon(db.Model):
@@ -153,9 +156,9 @@ class ItemAddon(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     addon_title = db.Column(db.String)
     addon_value = db.Column(db.String)
+    restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurant.id', ondelete='CASCADE'), index=True)
     menu_id = db.Column(db.Integer, db.ForeignKey('menu.id', ondelete='CASCADE'), index=True)
     section_id = db.Column(db.Integer, db.ForeignKey('section.id', ondelete='CASCADE'), index=True)
-    restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurant.id', ondelete='CASCADE'), index=True)
     menu_item_id = db.Column(db.Integer, db.ForeignKey('menu_item.id', ondelete='CASCADE'), index=True) 
 
 
