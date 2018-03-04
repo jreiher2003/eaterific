@@ -58,8 +58,6 @@ def rest_page_city(url_slug_state, state_id, url_slug_city, city_id, url_slug_re
     menu_items = MenuItem.query.filter_by(restaurant_id=rest_id).all()
     item_price = ItemPrice.query.filter_by(restaurant_id=rest_id).all()
     item_addon = ItemAddon.query.filter_by(restaurant_id=rest_id).all()
-    for i in item_addon:
-        print i.addon_title.encode('ascii').decode('unicode_escape')
     return render_template("rest_page.html", 
         rest=rest, 
         menu=menu, 
