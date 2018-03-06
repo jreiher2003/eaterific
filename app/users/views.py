@@ -203,8 +203,12 @@ def oauth_callback(provider):
             print "not user active"
             # user logins in with social for first time and is not currently loggged in under any other account
             provider_name = ProviderName.query.filter_by(name=provider).one()
-            user_profile = UsersProfile(screen_name=username,email=email, avatar=avatar)
+            user_profile = UsersProfile(screen_name=username, email=email, avatar=avatar)
             db.session.add(user_profile)
+            db.session.commit()
+            user_basic = db.session.query(Role).filter_by(name="userbasic").one()
+            users_roles = UserRoles(user_id=user_profile.id, role_id=user_basic.id)
+            db.session.add(users_roles)
             db.session.commit()
             check_exist_social_login_id = SocialLogin.query.filter_by(social_login_id=social_id).one_or_none()
             if not check_exist_social_login_id: 
