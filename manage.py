@@ -15,7 +15,7 @@ manager.add_command('db', MigrateCommand)
 def create_users():
     UsersProfile.__table__.create(db.engine, checkfirst=True)
     Role.__table__.create(db.engine, checkfirst=True)
-    UserRoles.__table__.create(db.engine, checkfirst=True)
+    UsersRoles.__table__.create(db.engine, checkfirst=True)
     UsersRegister.__table__.create(db.engine, checkfirst=True)
     ProviderName.__table__.create(db.engine, checkfirst=True)
     SocialLogin.__table__.create(db.engine, checkfirst=True)
@@ -28,7 +28,7 @@ def drop_users():
     SocialLogin.__table__.drop(db.engine, checkfirst=True)
     ProviderName.__table__.drop(db.engine, checkfirst=True)
     UsersRegister.__table__.drop(db.engine, checkfirst=True)
-    UserRoles.__table__.drop(db.engine, checkfirst=True)
+    UsersRoles.__table__.drop(db.engine, checkfirst=True)
     Role.__table__.drop(db.engine, checkfirst=True)
     UsersProfile.__table__.drop(db.engine, checkfirst=True)
     print "dropped all users tables" 

@@ -56,7 +56,7 @@ def register():
             )
         db.session.add(users)
         db.session.commit()
-        users_roles = UserRoles(user_id=users.id, role_id=user_basic.id)
+        users_roles = UsersRoles(user_id=users.id, role_id=user_basic.id)
         db.session.add(users_roles)
         db.session.commit()
         user_register = UsersRegister(
@@ -73,7 +73,7 @@ def register():
     return render_template("register.html",form=form)
 
 
-@users_blueprint.route('/logout')
+@users_blueprint.route('/logout/')
 @login_required
 def logout():
     logout_user()
@@ -99,7 +99,7 @@ def user_profile():
     return render_template('profile.html', connected_providers=connected_providers,
                            unconnected_providers=unconnected_providers, todos=todos)
 
-@users_blueprint.route("/settings")
+@users_blueprint.route("/settings/")
 def user_settings():
     return "user settings"
 
@@ -116,7 +116,7 @@ def delete_user():
         flash("You just deleted your account.", "danger")
         return redirect(url_for('users.index'))
 
-@users_blueprint.route('/new-todo', methods=['GET', 'POST'])
+@users_blueprint.route('/new-todo/', methods=['GET', 'POST'])
 @login_required
 def new_todo():
     if request.method == 'POST':
@@ -129,7 +129,7 @@ def new_todo():
         return redirect(url_for('users.user_profile'))
     return render_template('new-todo.html', page='new-todo')
 
-@users_blueprint.route('/mark-done/<int:todo_id>', methods=['POST'])
+@users_blueprint.route('/mark-done/<int:todo_id>/', methods=['POST'])
 @login_required
 def mark_done(todo_id):
     print todo_id
@@ -142,7 +142,7 @@ def mark_done(todo_id):
         return redirect(url_for('users.user_profile'))
 
 
-@users_blueprint.route('/authorize/<provider>')
+@users_blueprint.route('/authorize/<provider>/')
 def oauth_authorize(provider):
     if not current_user.is_anonymous:
         return redirect(url_for('rest.index'))
@@ -150,7 +150,7 @@ def oauth_authorize(provider):
     return oauth.authorize()
 
 
-@users_blueprint.route('/callback/<provider>')
+@users_blueprint.route('/callback/<provider>/')
 def oauth_callback(provider):
     if not current_user.is_anonymous:
         return redirect(url_for('rest.index'))

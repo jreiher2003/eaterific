@@ -23,7 +23,7 @@ class UsersProfile(db.Model):
     current_login_ip = db.Column(db.String(45))
     login_count = db.Column(db.Integer, default=0) 
 
-    roles = db.relationship('Role', secondary='user_roles',
+    roles = db.relationship('Role', secondary='users_roles',
             backref=db.backref('users', lazy='dynamic'))
     
     def is_authenticated(self):
@@ -38,13 +38,15 @@ class UsersProfile(db.Model):
     def get_id(self):
         return unicode(self.id)
 
-# Define Role model
+# Define Role .
 class Role(db.Model):
+
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(50), unique=True)
 
-# Define UserRoles model
-class UserRoles(db.Model):
+# Define UsersRoles model
+class UsersRoles(db.Model):
+
     id = db.Column(db.Integer(), primary_key=True)
     user_id = db.Column(db.Integer(), db.ForeignKey('users_profile.id', ondelete='CASCADE'))
     role_id = db.Column(db.Integer(), db.ForeignKey('role.id', ondelete='CASCADE'))
