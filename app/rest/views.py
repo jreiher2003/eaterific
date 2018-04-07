@@ -9,7 +9,7 @@ rest_blueprint = Blueprint("rest", __name__, template_folder="templates")
 @rest_blueprint.route("/")
 def index():
     state = State.query.all()
-    return render_template("front_page/front_page_index.html",state=state)
+    return render_template("front_page/index.html",state=state)
 
 @rest_blueprint.route("/about")
 def about():
@@ -21,7 +21,7 @@ def state_page(url_slug_state,state_id):
     city_metro = City.query.filter_by(state_id=state_id, metro_area=False).order_by(desc(City.r_total)).all()
     canada = City.query.filter(City.state_id==state_id, City.county_id==None).order_by(desc(City.r_total)).all()
     state_name = State.query.filter_by(id=state_id).one()
-    return render_template("state_page.html", 
+    return render_template("state/state_page.html", 
         url_slug_state=url_slug_state,
         state_name=state_name.name, 
         state_id=state_id, 
@@ -38,7 +38,7 @@ def city_page(url_slug_state,state_id,url_slug_city,city_id, page=1):
     .join(RestaurantCusine).filter(Cusine.id==RestaurantCusine.cusine_id)\
     .join(Restaurant).filter(Restaurant.id==RestaurantCusine.restaurant_id)\
     .filter(Restaurant.city_id==city_id).order_by(asc(Cusine.name)).all()
-    return render_template('city_page.html', 
+    return render_template('city/city_page.html', 
         url_slug_state=url_slug_state, 
         url_slug_city=url_slug_city, 
         state_name=state_name.name,
@@ -58,7 +58,7 @@ def rest_page_city(url_slug_state, state_id, url_slug_city, city_id, url_slug_re
     menu_items = MenuItem.query.filter_by(restaurant_id=rest_id).all()
     item_price = ItemPrice.query.filter_by(restaurant_id=rest_id).all()
     item_addon = ItemAddon.query.filter_by(restaurant_id=rest_id).all()
-    return render_template("rest_page.html", 
+    return render_template("restaurant/rest_page.html", 
         rest=rest, 
         menu=menu, 
         section=section, 
