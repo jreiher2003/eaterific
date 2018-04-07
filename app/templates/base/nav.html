@@ -10,29 +10,11 @@
       <a class="navbar-brand" href="{{ url_for('rest.index') }}"><img src="/static/img/eaterific_nav.png"></a>
       <!-- <a class="navbar-brand" href="#">Eaterific</a> -->
     </div>
-
-      <form class="navbar-form navbar-left">
-        <div class="form-group">
-          <label class="sr-only">Search</label>
-          <div class="input-group">
-            <span class="input-group-addon">
-                <i class="fa fa-map-marker"></i>
-            </span>
-            <input type="text" class="form-control input-lg" placeholder="City">
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="sr-only">Where to eat</label>
-          <div class="input-group">
-            <span class="input-group-addon">
-                <i class="fa fa-cutlery"></i>
-            </span>
-            <input type="password" class="form-control input-lg" placeholder="What do you want to eat?">
-          </div>
-        </div>
-        <button type="submit" class="btn btn-success input-lg"><i class="fa fa-search fa-2x"></i> </button>
-      </form>
-
+    {% if request.endpoint.endswith('index') %}
+        
+      {% else %}
+      {% include "base/search_bar_nav.html" %}
+    {% endif %}
        <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse navbar-right">
       <ul class="nav navbar-nav">

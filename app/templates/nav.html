@@ -10,9 +10,11 @@
       <a class="navbar-brand" href="{{ url_for('rest.index') }}"><img src="/static/img/eaterific_nav.png"></a>
       <!-- <a class="navbar-brand" href="#">Eaterific</a> -->
     </div>
-
-     
-
+    {% if request.endpoint.endswith('index') %}
+        
+      {% else %}
+      {% include "search_bar_nav.html" %}
+    {% endif %}
        <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse navbar-right">
       <ul class="nav navbar-nav">

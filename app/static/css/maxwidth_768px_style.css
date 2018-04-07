@@ -1,0 +1,5 @@
+@media screen and (max-width: 768px) {
+	h2.test {
+		color: blue;
+	}
+}

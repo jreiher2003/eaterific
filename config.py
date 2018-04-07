@@ -44,6 +44,8 @@ class TestConfig(BaseConfig):
     MAIL_SUPPRESS_SEND = True
     WTF_CSRF_ENABLED = False
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
+   # LIVESERVER_PORT = 5556
+    #LIVESERVER_TIMEOUT = 10
 
 class DevelopmentConfig(BaseConfig):
     DEBUG = True
