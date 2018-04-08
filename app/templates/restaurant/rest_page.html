@@ -1,0 +1,82 @@
+{% extends "base/base.html" %}
+{% block content %}
+
+rest page<br><br>
+
+    {{ rest.rest_name }}<br>
+    {{ rest.city_name }}<br>
+    {{ rest.neighborhood_name }}<br>
+    {{ rest.phone }}<br>
+    {{ rest.address }}<br>
+    {{ rest.city_ }}<br>
+    {{ rest.state_ }}<br>
+    {{ rest.zip_ }}<br>
+    {{ rest.website }}<br>
+    {{ rest.description }}<br>
+    {{ rest.hours }}<br>
+    {{ rest.delivery }}<br>
+    {{ rest.wifi }}<br>
+    {{ rest.alcohol }}<br>
+    {{ rest.price_point }}<br>
+    {{ rest.attire }}<br>
+    {{ rest.payment }}<br>
+    {{ rest.parking }}<br>
+    {{ rest.outdoor_seats }}<br>
+    {{ rest.reservations }}<br>
+    {{ rest.good_for_kids }}<br>
+    {{ rest.menu_url_id }}<br>
+    {{ rest.menu_link_pdf }}<br>
+    {{ rest.state_id }}<br>
+    {{ rest.county_id }}<br>
+    {{ rest.city_metro_id }}<br>
+
+<hr>
+{#<h1>{{ menu_name.name }}</h2>
+{{ cats }}<br>
+{% for c in cats %}
+    {% for i in c.category %}
+        <b>{{ i.name }}</b><br>
+        {% for x in c.menu_item %}
+            {% if i.id == x.category_id %}
+                {{ x.name }}<br>
+                {{ x.description }}<br>
+                {{ x.price }}<br><br>
+            {% endif %}
+        {% endfor %}  
+            <br>
+    {% endfor %}
+{% endfor %}#}
+
+
+{% for m in menu %}
+    <h2>{{ m.name }} </h2>
+
+   {% for s in section %}
+      {% if m.id == s.menu_id %}
+        <h4>{{ s.name }}</h4>
+
+        {% for mi in menu_items %}
+            {% if s.id == mi.section_id %}
+                <b>{{ mi.name }}</b>,
+
+                {% for ip in item_price %}
+                    {% if mi.id == ip.menu_item_id %}
+                        <i>{{ ip.price_value }}</i>, <i>{{ ip.price_title}}</i><br>
+                    {% endif %}
+                {% endfor %}
+                           
+                {% for ia in item_addon %}
+                    {% if mi.id == ia.menu_item_id %}
+                        {{ ia.addon_title.encode("utf-8").decode("utf-8") }}, {{ ia.addon_value }}<br>
+                    {% endif %}
+                {% endfor %}
+
+            {% endif %}
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+{% endfor %} 
+
+
+
+{% endblock %}
