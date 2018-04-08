@@ -19,6 +19,7 @@
 </head> 
 <body class="b">
     {% include "base/nav.html" %}
+    {% include "base/search_bar_nav.html" %}
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       <ul class="list-unstyled">
@@ -28,7 +29,6 @@
       </ul>
     {% endif %}
     {% endwith %}
-    <h2 class="test">Test</h2>
     {% block content %}{% endblock %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
