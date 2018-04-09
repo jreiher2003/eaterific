@@ -1,3 +1,7 @@
 html body.b {
 	/*background-color: black;*/
 }
+.searchbar {
+    /*width: 50px;*/
+    margin: 0px auto;
+}
