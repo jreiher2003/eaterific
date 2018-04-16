@@ -110,91 +110,91 @@ class TwitterSignIn(OAuthSignIn):
         return social_id, username, None, avatar   # Twitter does not provide email
 
 
-class LinkedinLogin(OAuthSignIn):
-    def __init__(self):
-        super(LinkedinLogin, self).__init__('linkedin')
-        self.service = OAuth2Service(
-                name='linkedin',
-                client_id=self.consumer_id,
-                client_secret=self.consumer_secret,
-                authorize_url='https://www.linkedin.com/uas/oauth2/authorization',
-                access_token_url='https://www.linkedin.com/uas/oauth2/accessToken',
-                base_url='https://api.linkedin.com/v1/'
-        )
+# class LinkedinLogin(OAuthSignIn):
+#     def __init__(self):
+#         super(LinkedinLogin, self).__init__('linkedin')
+#         self.service = OAuth2Service(
+#                 name='linkedin',
+#                 client_id=self.consumer_id,
+#                 client_secret=self.consumer_secret,
+#                 authorize_url='https://www.linkedin.com/uas/oauth2/authorization',
+#                 access_token_url='https://www.linkedin.com/uas/oauth2/accessToken',
+#                 base_url='https://api.linkedin.com/v1/'
+#         )
 
-    def authorize(self):
-        return redirect(self.service.get_authorize_url(
-                scope='r_emailaddress r_basicprofile',
-                response_type='code',
-                state=''.join(str(random.randrange(9)) for _ in range(24)),
-                redirect_uri=self.get_callback_url()
-        ))
+#     def authorize(self):
+#         return redirect(self.service.get_authorize_url(
+#                 scope='r_emailaddress r_basicprofile',
+#                 response_type='code',
+#                 state=''.join(str(random.randrange(9)) for _ in range(24)),
+#                 redirect_uri=self.get_callback_url()
+#         ))
 
-    def callback(self):
-        if 'code' not in request.args:
-            return None, None, None, None#, None, None
-        data = {'code': request.args['code'],
-                      'grant_type': 'authorization_code',
-                      'redirect_uri': self.get_callback_url()}
-        json_decoder = json.loads
-        params = {'decoder': json_decoder,
-                  'bearer_auth': False}
-        session = self.service.get_auth_session(data=data, **params)
-        r = session.get('people/~:(id,email-address,first-name,last-name,picture-url)', params={
-                        'format': 'json',
-                        'oauth2_access_token': session.access_token}, bearer_auth=False)
-        me = r.json()
-        print me
-        email = me['emailAddress']
-        first_name = me['firstName']
-        last_name = me['lastName']
-        avatar = me['pictureUrl']
-        return (
-            # 'linkedin',
-            'linkedin$' + str(me['id']),
-            first_name + ' ' + last_name,
-            email,
-            avatar,
-            # first_name,
-            # last_name,
-        )
+#     def callback(self):
+#         if 'code' not in request.args:
+#             return None, None, None, None#, None, None
+#         data = {'code': request.args['code'],
+#                       'grant_type': 'authorization_code',
+#                       'redirect_uri': self.get_callback_url()}
+#         json_decoder = json.loads
+#         params = {'decoder': json_decoder,
+#                   'bearer_auth': False}
+#         session = self.service.get_auth_session(data=data, **params)
+#         r = session.get('people/~:(id,email-address,first-name,last-name,picture-url)', params={
+#                         'format': 'json',
+#                         'oauth2_access_token': session.access_token}, bearer_auth=False)
+#         me = r.json()
+#         print me
+#         email = me['emailAddress']
+#         first_name = me['firstName']
+#         last_name = me['lastName']
+#         avatar = me['pictureUrl']
+#         return (
+#             # 'linkedin',
+#             'linkedin$' + str(me['id']),
+#             first_name + ' ' + last_name,
+#             email,
+#             avatar,
+#             # first_name,
+#             # last_name,
+#         )
 
-class GithubLogin(OAuthSignIn):
-    def __init__(self):
-        super(GithubLogin, self).__init__('github')
-        self.service = OAuth2Service(
-                name='github',
-                client_id=self.consumer_id,
-                client_secret=self.consumer_secret,
-                authorize_url='https://github.com/login/oauth/authorize',
-                access_token_url='https://github.com/login/oauth/access_token',
-                base_url='https://api.github.com'
-        )
+# class GithubLogin(OAuthSignIn):
+#     def __init__(self):
+#         super(GithubLogin, self).__init__('github')
+#         self.service = OAuth2Service(
+#                 name='github',
+#                 client_id=self.consumer_id,
+#                 client_secret=self.consumer_secret,
+#                 authorize_url='https://github.com/login/oauth/authorize',
+#                 access_token_url='https://github.com/login/oauth/access_token',
+#                 base_url='https://api.github.com'
+#         )
 
-    def authorize(self):
-        return redirect(self.service.get_authorize_url(
-                scope='user',
-                response_type='code',
-                redirect_uri=self.get_callback_url()
-        ))
+#     def authorize(self):
+#         return redirect(self.service.get_authorize_url(
+#                 scope='user',
+#                 response_type='code',
+#                 redirect_uri=self.get_callback_url()
+#         ))
 
-    def callback(self):
-        if 'code' not in request.args:
-            return None, None, None, None#, None, None
-        oauth_session = self.service.get_auth_session(
-                data={'code': request.args['code'],
-                      'grant_type': 'authorization_code',
-                      'redirect_uri': self.get_callback_url()})
-        me = oauth_session.get('user?fields=email,name,login,avatar_url').json()
-        return (
-            # 'github',
-            'github$' + str(me['id']),
-            me.get('name'),
-            me.get('email'),
-            me.get("avatar_url")
-            # me.get('login')
-            # me.get('name').split()[0],
-        )
+#     def callback(self):
+#         if 'code' not in request.args:
+#             return None, None, None, None#, None, None
+#         oauth_session = self.service.get_auth_session(
+#                 data={'code': request.args['code'],
+#                       'grant_type': 'authorization_code',
+#                       'redirect_uri': self.get_callback_url()})
+#         me = oauth_session.get('user?fields=email,name,login,avatar_url').json()
+#         return (
+#             # 'github',
+#             'github$' + str(me['id']),
+#             me.get('name'),
+#             me.get('email'),
+#             me.get("avatar_url")
+#             # me.get('login')
+#             # me.get('name').split()[0],
+#         )
 
 class GoogleLogin(OAuthSignIn):
     def __init__(self):
@@ -232,85 +232,85 @@ class GoogleLogin(OAuthSignIn):
             me.get('picture')
         )
 
-class FourSquareLogin(OAuthSignIn):
-    def __init__(self):
-        super(FourSquareLogin, self).__init__('foursquare')
-        self.service = OAuth2Service(
-                name='foursquare',
-                client_id=self.consumer_id,
-                client_secret=self.consumer_secret,
-                authorize_url='https://foursquare.com/oauth2/authenticate',
-                access_token_url='https://foursquare.com/oauth2/access_token',
-                base_url='https://api.foursquare.com/v2'
-        )
+# class FourSquareLogin(OAuthSignIn):
+#     def __init__(self):
+#         super(FourSquareLogin, self).__init__('foursquare')
+#         self.service = OAuth2Service(
+#                 name='foursquare',
+#                 client_id=self.consumer_id,
+#                 client_secret=self.consumer_secret,
+#                 authorize_url='https://foursquare.com/oauth2/authenticate',
+#                 access_token_url='https://foursquare.com/oauth2/access_token',
+#                 base_url='https://api.foursquare.com/v2'
+#         )
 
-    def authorize(self):
-        return redirect(self.service.get_authorize_url(
-                client_id= self.consumer_id,
-                response_type='code',
-                redirect_uri=self.get_callback_url()
-        ))
+#     def authorize(self):
+#         return redirect(self.service.get_authorize_url(
+#                 client_id= self.consumer_id,
+#                 response_type='code',
+#                 redirect_uri=self.get_callback_url()
+#         ))
 
-    def callback(self):
-        if 'code' not in request.args:
-            return None, None, None, None
-        data = {'code': request.args['code'],
-                      'grant_type': 'authorization_code',
-                      'redirect_uri': self.get_callback_url()}
-        print data
-        response = self.service.get_raw_access_token(data=data)
-        response = response.json()
-        print response
-        # oauth2_session = self.service.get_session(response['access_token'])
-        me = requests.get('https://api.foursquare.com/v2/users/self?oauth_token=%s&v=20170725' % response['access_token']).json()
-        fr = me['response']['user']
-        print fr 
-        avatar = fr['photo']['prefix']+ '64x64' +fr['photo']['suffix']
-        return (
-            "foursquare$" + str(fr['id']), 
-            fr['firstName'] + " " + fr['lastName'], 
-            fr['contact']['email'],
-            avatar
-            )
+#     def callback(self):
+#         if 'code' not in request.args:
+#             return None, None, None, None
+#         data = {'code': request.args['code'],
+#                       'grant_type': 'authorization_code',
+#                       'redirect_uri': self.get_callback_url()}
+#         print data
+#         response = self.service.get_raw_access_token(data=data)
+#         response = response.json()
+#         print response
+#         # oauth2_session = self.service.get_session(response['access_token'])
+#         me = requests.get('https://api.foursquare.com/v2/users/self?oauth_token=%s&v=20170725' % response['access_token']).json()
+#         fr = me['response']['user']
+#         print fr 
+#         avatar = fr['photo']['prefix']+ '64x64' +fr['photo']['suffix']
+#         return (
+#             "foursquare$" + str(fr['id']), 
+#             fr['firstName'] + " " + fr['lastName'], 
+#             fr['contact']['email'],
+#             avatar
+#             )
 
-class RedditLogin(OAuthSignIn):
-    def __init__(self):
-        super(RedditLogin, self).__init__('reddit')
-        self.service = OAuth2Service(
-                name='reddit',
-                client_id=self.consumer_id,
-                client_secret=self.consumer_secret,
-                authorize_url='https://ssl.reddit.com/api/v1/authorize',
-                access_token_url='https://ssl.reddit.com/api/v1/access_token',
-                base_url='https://oauth.reddit.com'
-        )
+# class RedditLogin(OAuthSignIn):
+#     def __init__(self):
+#         super(RedditLogin, self).__init__('reddit')
+#         self.service = OAuth2Service(
+#                 name='reddit',
+#                 client_id=self.consumer_id,
+#                 client_secret=self.consumer_secret,
+#                 authorize_url='https://ssl.reddit.com/api/v1/authorize',
+#                 access_token_url='https://ssl.reddit.com/api/v1/access_token',
+#                 base_url='https://oauth.reddit.com'
+#         )
 
-    def random_string(self):
-        return "".join(random.choice(letters) for x in xrange(16))
+#     def random_string(self):
+#         return "".join(random.choice(letters) for x in xrange(16))
 
 
-    def authorize(self):
-        state = self.random_string()
-        return redirect(self.service.get_authorize_url(
-                client_id=self.consumer_id,
-                response_type='code',
-                state=state,
-                redirect_uri=self.get_callback_url(),
-                user_agent='j3ffrey_',
-                duration='permanent',
-                scope='identity'
-        ))
+#     def authorize(self):
+#         state = self.random_string()
+#         return redirect(self.service.get_authorize_url(
+#                 client_id=self.consumer_id,
+#                 response_type='code',
+#                 state=state,
+#                 redirect_uri=self.get_callback_url(),
+#                 user_agent='j3ffrey_',
+#                 duration='permanent',
+#                 scope='identity'
+#         ))
 
-    def callback(self):
-        if 'code' not in request.args:
-            return None, None, None#, None
-        data = {'code': request.args['code'],
-                      'grant_type': 'authorization_code',
-                      'redirect_uri': self.get_callback_url()}
-        print data
-        response = self.service.get_raw_access_token(data=data)
-        response = response.json()
-        print response
-        headers = {"Authorization": "bearer" + response['access_token']}
-        me = requests.get("https://oauth.reddit.com/api/v1/me", headers=headers).json()
-        return (me["id"], me["name"], me["email"])
+#     def callback(self):
+#         if 'code' not in request.args:
+#             return None, None, None#, None
+#         data = {'code': request.args['code'],
+#                       'grant_type': 'authorization_code',
+#                       'redirect_uri': self.get_callback_url()}
+#         print data
+#         response = self.service.get_raw_access_token(data=data)
+#         response = response.json()
+#         print response
+#         headers = {"Authorization": "bearer" + response['access_token']}
+#         me = requests.get("https://oauth.reddit.com/api/v1/me", headers=headers).json()
+#         return (me["id"], me["name"], me["email"])

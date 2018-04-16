@@ -111,7 +111,7 @@ class TodoItem(db.Model):
 event.listen(
     ProviderName.__table__, 'after_create',
     DDL(
-        """ INSERT INTO provider_name (id,name) VALUES(1,'facebook'),(2, 'google'),(3, 'github'), (4, 'linkedin'), (5, 'twitter'), (6, 'foursquare'), (7, 'reddit'); """)
+        """ INSERT INTO provider_name (id,name) VALUES(1,'facebook'),(2, 'google'),(3, 'twitter'); """)
 )
 event.listen(
     Role.__table__, 'after_create',

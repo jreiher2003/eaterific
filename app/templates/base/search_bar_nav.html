@@ -1,6 +1,10 @@
 {% from "base/_helper_macro.html" import render_field %}
+{% if request.endpoint.endswith('login') %}
+{% elif request.endpoint.endswith('register') %}
+      {% else %}
 <div class="searchbar">
-  <form class="navbar-form" action="{{ url_for('search_bar') }}" method="POST">
+  <form class="navbar-form" action="{{ url_for('rest.search_bar') }}" method="POST">
+    {{ form.csrf_token }}
     <div class="form-group">
       <label class="sr-only">Where to eat</label>
       <div class="input-group">
@@ -14,3 +18,4 @@
     <!-- <button type="submit" class="btn btn-success input-lg"><i class="fa fa-search fa-2x"></i> </button> -->
   </form>
 </div>
+{% endif %}

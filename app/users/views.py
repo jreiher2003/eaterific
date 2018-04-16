@@ -207,7 +207,7 @@ def oauth_callback(provider):
             db.session.add(user_profile)
             db.session.commit()
             user_basic = db.session.query(Role).filter_by(name="userbasic").one()
-            users_roles = UserRoles(user_id=user_profile.id, role_id=user_basic.id)
+            users_roles = UsersRoles(user_id=user_profile.id, role_id=user_basic.id)
             db.session.add(users_roles)
             db.session.commit()
             check_exist_social_login_id = SocialLogin.query.filter_by(social_login_id=social_id).one_or_none()

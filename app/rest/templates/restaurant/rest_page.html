@@ -1,6 +1,14 @@
 {% extends "base/base.html" %}
 {% block content %}
 
+{{ yelp_info }}<br><br>
+{{ yelp_reviews }}<br><br>
+{% for img in rest_cover_photo %}
+<img src="{{ img.cover_photo }}" alt="cover photos"><br>
+{% endfor %}
+{% for img in rest_img %}
+<img src="{{ img.photos }}" alt="restaurant images"><br>
+{% endfor %}
 rest page<br><br>
 
     {{ rest.rest_name }}<br>
@@ -76,6 +84,7 @@ rest page<br><br>
       {% endif %}
     {% endfor %}
 {% endfor %} 
+
 
 
 
