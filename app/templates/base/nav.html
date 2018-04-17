@@ -10,13 +10,10 @@
       <a class="navbar-brand" href="{{ url_for('rest.index') }}"><img src="/static/img/eaterific_nav.png"></a>
       <!-- <a class="navbar-brand" href="#">Eaterific</a> -->
     </div>
-      
-    
        <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse navbar-right" id="myNavbar">
       <ul class="nav navbar-nav">
         {% if current_user.is_authenticated %}
-       
         <li><a href="#"><img src="{{ current_user.avatar }}"></a></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ current_user.screen_name }}<b class="caret"></b></a>
@@ -27,18 +24,12 @@
             <li><a href="{{ url_for('users.logout') }}">Logout</a></li>
           </ul>
         </li>
-        {% else %}
-    
-         
+        {% else %}         
           <li><a href="{{ url_for('users.login') }}">Login</a></li>
           <li><a href="{{ url_for('users.register') }}">Register</a></li>
-      
         {% endif %}
       </ul>
     </div>
-
-
-   
   </div>
 </nav>
 

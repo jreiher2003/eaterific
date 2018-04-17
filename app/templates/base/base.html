@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
   <meta charset="UTF-8">
   <title>Your page title here :)</title>
   <meta name="description" content="">
@@ -18,6 +17,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/minwidth_769px_style.css') }}">
 </head> 
 <body class="b">
+  <div class="container-fluid">
     {% include "base/nav.html" %}
     {% include "base/search_bar_nav.html" %}
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -30,9 +30,9 @@
     {% endif %}
     {% endwith %}
     {% block content %}{% endblock %}
+  </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script> -->
-    
 </body>
 </html>

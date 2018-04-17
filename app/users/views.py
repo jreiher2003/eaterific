@@ -7,13 +7,7 @@ from models import *
 from .forms import * 
 from .utils import roles_required 
 
-
 users_blueprint = Blueprint("users", __name__, template_folder="templates") 
-
-
-# @users_blueprint.route('/index')
-# def index():
-#     return render_template('index.html')
 
 @users_blueprint.route("/login/", methods=["GET","POST"])
 def login():

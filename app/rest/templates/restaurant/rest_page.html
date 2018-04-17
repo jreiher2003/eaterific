@@ -1,15 +1,18 @@
 {% extends "base/base.html" %}
 {% block content %}
+<div class="row">
+    <div class="col-md-12">
 
-{{ yelp_info }}<br><br>
-{{ yelp_reviews }}<br><br>
-{% for img in rest_cover_photo %}
-<img src="{{ img.cover_photo }}" alt="cover photos"><br>
-{% endfor %}
-{% for img in rest_img %}
-<img src="{{ img.photos }}" alt="restaurant images"><br>
-{% endfor %}
-rest page<br><br>
+    {{ yelp_info }}<br><br>
+    {{ yelp_reviews }}<br><br>
+    {% for img in rest_cover_photo %}
+        <img src="{{ img.cover_photo }}" alt="cover photos"><br>
+    {% endfor %}
+    {% for img in rest_img %}
+        <img src="{{ img.photos }}" alt="restaurant images"><br>
+    {% endfor %}
+
+    rest page<br><br>
 
     {{ rest.rest_name }}<br>
     {{ rest.city_name }}<br>
@@ -38,54 +41,53 @@ rest page<br><br>
     {{ rest.county_id }}<br>
     {{ rest.city_metro_id }}<br>
 
-<hr>
-{#<h1>{{ menu_name.name }}</h2>
-{{ cats }}<br>
-{% for c in cats %}
-    {% for i in c.category %}
-        <b>{{ i.name }}</b><br>
-        {% for x in c.menu_item %}
-            {% if i.id == x.category_id %}
-                {{ x.name }}<br>
-                {{ x.description }}<br>
-                {{ x.price }}<br><br>
-            {% endif %}
-        {% endfor %}  
-            <br>
-    {% endfor %}
-{% endfor %}#}
-
-
-{% for m in menu %}
-    <h2>{{ m.name }} </h2>
-
-   {% for s in section %}
-      {% if m.id == s.menu_id %}
-        <h4>{{ s.name }}</h4>
-
-        {% for mi in menu_items %}
-            {% if s.id == mi.section_id %}
-                <b>{{ mi.name }}</b>,
-
-                {% for ip in item_price %}
-                    {% if mi.id == ip.menu_item_id %}
-                        <i>{{ ip.price_value }}</i>, <i>{{ ip.price_title}}</i><br>
-                    {% endif %}
-                {% endfor %}
-                           
-                {% for ia in item_addon %}
-                    {% if mi.id == ia.menu_item_id %}
-                        {{ ia.addon_title.encode("utf-8").decode("utf-8") }}, {{ ia.addon_value }}<br>
-                    {% endif %}
-                {% endfor %}
-
-            {% endif %}
+    <hr>
+    {#<h1>{{ menu_name.name }}</h2>
+    {{ cats }}<br>
+    {% for c in cats %}
+        {% for i in c.category %}
+            <b>{{ i.name }}</b><br>
+            {% for x in c.menu_item %}
+                {% if i.id == x.category_id %}
+                    {{ x.name }}<br>
+                    {{ x.description }}<br>
+                    {{ x.price }}<br><br>
+                {% endif %}
+            {% endfor %}  
+                <br>
         {% endfor %}
-      {% endif %}
-    {% endfor %}
-{% endfor %} 
+    {% endfor %}#}
 
 
+    {% for m in menu %}
+        <h2>{{ m.name }} </h2>
+        
+       {% for s in section %}
+          {% if m.id == s.menu_id %}
+            <h4>{{ s.name }}</h4>
 
+            {% for mi in menu_items %}
+                {% if s.id == mi.section_id %}
+                    <b>{{ mi.name }}</b>,
 
+                    {% for ip in item_price %}
+                        {% if mi.id == ip.menu_item_id %}
+                            <i>{{ ip.price_value }}</i>, <i>{{ ip.price_title}}</i><br>
+                        {% endif %}
+                    {% endfor %}
+                               
+                    {% for ia in item_addon %}
+                        {% if mi.id == ia.menu_item_id %}
+                            {{ ia.addon_title.encode("utf-8").decode("utf-8") }}, {{ ia.addon_value }}<br>
+                        {% endif %}
+                    {% endfor %}
+
+                {% endif %}
+            {% endfor %}
+          {% endif %}
+        {% endfor %}
+    {% endfor %} 
+
+    </div>
+</div>
 {% endblock %}

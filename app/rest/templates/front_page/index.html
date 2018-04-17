@@ -1,8 +1,7 @@
 {% extends "base/base.html" %}
 {% block content %}
-<div class="container-fluid">
-	<div class="row">
-		<div class="col-md-12">
+<div class="row">
+	<div class="col-md-12">
 		<h1>USA</h1>
 		{% for i in state %}
 			{% if i.id < 52 %}
@@ -18,5 +17,4 @@
 		</div>
 	</div>
 </div>
-
 {% endblock %}
