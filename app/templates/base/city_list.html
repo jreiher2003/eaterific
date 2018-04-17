@@ -8,11 +8,11 @@
        <a href="{{ url_for('rest.page_cusine_city', url_slug_state=url_slug_state, state_id=state_id, url_slug_city=url_slug_city, city_id=city_id, url_slug_cusine=x.url_slug_cusine, cusine_id=x.id) }}">{{ x.name }}</a>,{{ x.id }},
      {% endfor %}
      <br>
-       {% for i in  r.phone | format_phone | yelp_city_filter %}
+       {#{% for i in  r.phone | format_phone | yelp_city_filter %}
             {% for x in i.businesses %}
                 {{ x.rating }}, {{ x.review_count }}
             {% endfor %}
-        {% endfor %}
+        {% endfor %}#}
     <hr>
     <br>
 {% endfor %}

@@ -16,8 +16,6 @@ manager = Manager(app)
 mail = Mail(app)
 cache = Cache(app)
 
-
-
 from app.users.views import users_blueprint 
 app.register_blueprint(users_blueprint) 
 from app.rest.views import rest_blueprint 

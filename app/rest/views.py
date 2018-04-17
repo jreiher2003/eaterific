@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
-from app import app, db
+from app import app, db, cache
 from flask import Blueprint, render_template, url_for, request, redirect, flash
 from sqlalchemy import desc, asc
 import requests
 from .models import * 
 from .forms import SearchForm
 from .utils import format_phone, yelp_reviews, yelp_api_phone_search
-
 
 rest_blueprint = Blueprint("rest", __name__, template_folder="templates")
 
@@ -22,6 +21,7 @@ def about():
     return "this is the about page"
 
 @rest_blueprint.route("/<path:url_slug_state>/<int:state_id>/")
+# @cache.cached(timeout=60*60*24, key_prefix='state_page')
 def state_page(url_slug_state,state_id):
     """ By State, within each state lists citys by county """
     form = SearchForm()
@@ -39,6 +39,7 @@ def state_page(url_slug_state,state_id):
         form=form)
 
 @rest_blueprint.route("/<path:url_slug_state>/<int:state_id>/<path:url_slug_city>/<int:city_id>/<int:page>")
+# @cache.cached(timeout=60*60*24, key_prefix='city_page')
 def city_page(url_slug_state,state_id,url_slug_city,city_id, page=1):
     """ Lists Restaurants in each City 50 per page """
     form = SearchForm()
@@ -49,7 +50,6 @@ def city_page(url_slug_state,state_id,url_slug_city,city_id, page=1):
     .join(RestaurantCusine).filter(Cusine.id==RestaurantCusine.cusine_id)\
     .join(Restaurant).filter(Restaurant.id==RestaurantCusine.restaurant_id)\
     .filter(Restaurant.city_id==city_id).order_by(asc(Cusine.name)).all()
-    
     return render_template('city/city_page.html', 
         url_slug_state=url_slug_state, 
         url_slug_city=url_slug_city, 
@@ -64,6 +64,7 @@ def city_page(url_slug_state,state_id,url_slug_city,city_id, page=1):
 
 
 @rest_blueprint.route("/r/<path:url_slug_state>/<int:state_id>/<path:url_slug_city>/<int:city_id>/<path:url_slug_rest>/<path:rest_id>/")
+# @cache.cached(timeout=60*60*24, key_prefix='rest_page_city')
 def rest_page_city(url_slug_state, state_id, url_slug_city, city_id, url_slug_rest, rest_id):
     """ lists information and menu about each restaurant """
     form = SearchForm()
@@ -100,6 +101,7 @@ def rest_page_city(url_slug_state, state_id, url_slug_city, city_id, url_slug_re
         rest_img=rest_img)
 
 @rest_blueprint.route("/c/<path:url_slug_state>/<int:state_id>/<path:url_slug_city>/<int:city_id>/<path:url_slug_cusine>/<path:cusine_id>/")
+# @cache.cached(timeout=60*60*24, key_prefix='page_cusine_city')
 def page_cusine_city(url_slug_state, state_id, url_slug_city, city_id, url_slug_cusine, cusine_id):
     form = SearchForm()
     rest_c = Restaurant.query.filter_by(state_id=state_id, city_id=city_id)\
