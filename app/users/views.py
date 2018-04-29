@@ -155,12 +155,14 @@ def oauth_callback(provider):
         flash('Authentication failed.')
         return redirect(url_for('rest.index'))
     social_login = SocialLogin.query.filter_by(social_login_id=social_id).first()
+    # checks social table to see if a login by that social media is there by id
     if social_login:
         print "if social"
         if not current_user.is_active:
             print "not user active"
             # has account and users signs back in with social account
             users = UsersProfile.query.filter_by(id=social_login.users_id).one_or_none()
+            users.avatar = avatar # updates avatar url
             users.login_count += 1
             users.last_login_ip = users.current_login_ip
             users.last_login_at = users.current_login_at
@@ -192,6 +194,7 @@ def oauth_callback(provider):
                 db.session.commit()
             return redirect(url_for("rest.index"))
     if not social_login:
+        # first time logging in via social media
         print "if not social"    
         if not current_user.is_active:
             print "not user active"

@@ -76,8 +76,11 @@ class Restaurant(db.Model):
     menu_link_pdf = db.Column(db.String)
 
     state_id = db.Column(db.Integer, db.ForeignKey("state.id"), index=True)
+    state = db.relationship('State')
     county_id = db.Column(db.Integer, db.ForeignKey("county.id"), index=True)
+    county = db.relationship('County')
     city_id = db.Column(db.Integer, db.ForeignKey("city.id"), index=True)
+    city = db.relationship('City')
     cusine = db.relationship('Cusine', secondary='restaurant_cusine', backref=db.backref('restaurant', lazy='dynamic', cascade="all, delete-orphan", single_parent=True))
     menu = db.relationship("Menu")
     

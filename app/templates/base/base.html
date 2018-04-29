@@ -17,8 +17,8 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/minwidth_769px_style.css') }}">
 </head> 
 <body class="b">
+  {% include "base/nav.html" %}
   <div class="container-fluid">
-    {% include "base/nav.html" %}
     {% include "base/search_bar_nav.html" %}
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}

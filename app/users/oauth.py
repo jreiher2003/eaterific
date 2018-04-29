@@ -12,6 +12,7 @@ class OAuthSignIn(object):
     def __init__(self, provider_name):
         self.provider_name = provider_name
         credentials = current_app.config['OAUTH_CREDENTIALS'][provider_name]
+        print credentials
         self.consumer_id = credentials['id']
         self.consumer_secret = credentials['secret']
 
@@ -63,6 +64,7 @@ class FacebookSignIn(OAuthSignIn):
                   'redirect_uri': self.get_callback_url()}, decoder=json.loads
         )
         me = oauth_session.get('me?fields=id,email,name,picture').json()
+        # print me
         print me['name'],me['picture']['data']['url']
         return (
             'facebook$' + me['id'],
@@ -103,7 +105,6 @@ class TwitterSignIn(OAuthSignIn):
             data={'oauth_verifier': request.args['oauth_verifier']}
         )
         me = oauth_session.get('account/verify_credentials.json').json()
-        print me
         social_id = 'twitter$' + str(me.get('id'))
         avatar = me.get("profile_image_url_https")
         username = me.get('screen_name')

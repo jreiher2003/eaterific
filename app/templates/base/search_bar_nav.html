@@ -1,6 +1,7 @@
 {% from "base/_helper_macro.html" import render_field %}
 {% if request.endpoint.endswith('login') %}
 {% elif request.endpoint.endswith('register') %}
+{% elif request.endpoint.endswith('profile') %}
       {% else %}
 <div class="searchbar">
   <form class="navbar-form" action="{{ url_for('rest.search_bar') }}" method="POST">

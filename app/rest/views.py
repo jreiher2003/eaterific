@@ -126,21 +126,45 @@ def search_bar():
     form = SearchForm()
     if form.validate_on_submit():
         zip_ = request.form["search"]
+        new = zip_
         rest = Restaurant.query.filter(Restaurant.zip_.like(new)).first()
-        return redirect(url_for('search_result', zip_=zip_))
+        print rest.state.url_slug_state
+        return redirect(url_for('rest.search_result', 
+            url_slug_state=rest.state.url_slug_state, 
+            state_id=rest.state_id, 
+            url_slug_city=rest.city.url_slug_city, 
+            city_id=rest.city_id,
+            zip_=new,
+            page=1
+            ))
     else:
         return "NO"
 
-@rest_blueprint.route("/c/<path:zip_>/")
-def search_result(zip_, page=1):
+@rest_blueprint.route("/<path:url_slug_state>/<int:state_id>/<path:url_slug_city>/<int:city_id>/<int:page>")
+def search_result(zip_,url_slug_state,state_id,url_slug_city,city_id,page=1):
     form = SearchForm()
     new = zip_[:-1]+"%"
     # https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&key=YOUR_API_KEY
     google_maps_api_key = "AIzaSyDYASZaU2ZmgQyOvTkh20SWkhlqyuO9E44"
-    # rest = Restaurant.query.filter_by(state_id=state_id, city_id=city_id).order_by(asc(Restaurant.rest_name)).paginate(page, 40, False)
     rest = Restaurant.query.filter(Restaurant.zip_.like(new)).order_by(asc(Restaurant.rest_name)).paginate(page, 40, False)
-    # print len(rest)
-    return render_template("search_zip.html", rest=rest, form=form)
+    state_name = State.query.filter_by(id=state_id).one()
+    city_name = City.query.filter_by(id=city_id).one()
+    rest_cusine = db.session.query(Cusine).distinct()\
+    .join(RestaurantCusine).filter(Cusine.id==RestaurantCusine.cusine_id)\
+    .join(Restaurant).filter(Restaurant.id==RestaurantCusine.restaurant_id)\
+    .filter(Restaurant.city_id==city_id).order_by(asc(Cusine.name)).all()
+    return render_template("city/city_page.html", 
+        url_slug_state=url_slug_state, 
+        url_slug_city=url_slug_city, 
+        state_name=state_name.name,
+        state_id=state_id, 
+        city_name=city_name.city_name, 
+        city_id=city_id, 
+        rest=rest, 
+        rest_cusine=rest_cusine, 
+        rest_total=city_name.r_total,
+        form=form,
+        )
 
 
 
