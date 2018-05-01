@@ -46,7 +46,7 @@
     {{ cats }}<br>
     {% for c in cats %}
         {% for i in c.category %}
-            <b>{{ i.name }}</b><br>
+            <p><b>{{ i.name }}</b></p>
             {% for x in c.menu_item %}
                 {% if i.id == x.category_id %}
                     {{ x.name }}<br>
@@ -65,20 +65,22 @@
        {% for s in section %}
           {% if m.id == s.menu_id %}
             <h4>{{ s.name }}</h4>
+            <p> {{ s.description }}</p>
 
             {% for mi in menu_items %}
                 {% if s.id == mi.section_id %}
-                    <b>{{ mi.name }}</b>,
+                    <p>{{ mi.name }}</p>
+                    <p>{{ mi.description }}</p>
 
                     {% for ip in item_price %}
                         {% if mi.id == ip.menu_item_id %}
-                            <i>{{ ip.price_value }}</i>, <i>{{ ip.price_title}}</i><br>
+                            <p><i>{{ ip.price_value }}</i>, <i>{{ ip.price_title}}</i></p>
                         {% endif %}
                     {% endfor %}
                                
                     {% for ia in item_addon %}
                         {% if mi.id == ia.menu_item_id %}
-                            {{ ia.addon_title.encode("utf-8").decode("utf-8") }}, {{ ia.addon_value }}<br>
+                            <p>{{ ia.addon_title.encode("utf-8").decode("utf-8") }}, {{ ia.addon_value }}</p>
                         {% endif %}
                     {% endfor %}
 

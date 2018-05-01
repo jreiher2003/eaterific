@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
+from string import capitalize
 from app import app, db, cache
 from flask import Blueprint, render_template, url_for, request, redirect, flash
-from sqlalchemy import desc, asc
+from sqlalchemy import desc, asc, or_
 import requests
 from .models import * 
 from .forms import SearchForm
@@ -25,7 +26,7 @@ def about():
 def state_page(url_slug_state,state_id):
     """ By State, within each state lists citys by county """
     form = SearchForm()
-    county = County.query.filter_by(state_id=state_id).all()
+    county = County.query.filter_by(state_id=state_id).order_by(asc(County.id)).all()
     city_metro = City.query.filter_by(state_id=state_id, metro_area=False).order_by(desc(City.r_total)).all()
     canada = City.query.filter(City.state_id==state_id, City.county_id==None).order_by(desc(City.r_total)).all()
     state_name = State.query.filter_by(id=state_id).one()
@@ -40,7 +41,7 @@ def state_page(url_slug_state,state_id):
 
 @rest_blueprint.route("/<path:url_slug_state>/<int:state_id>/<path:url_slug_city>/<int:city_id>/<int:page>")
 # @cache.cached(timeout=60*60*24, key_prefix='city_page')
-def city_page(url_slug_state,state_id,url_slug_city,city_id, page=1):
+def city_page(url_slug_state,state_id,url_slug_city,city_id, page=1, zip_=None):
     """ Lists Restaurants in each City 50 per page """
     form = SearchForm()
     rest = Restaurant.query.filter_by(state_id=state_id, city_id=city_id).order_by(asc(Restaurant.rest_name)).paginate(page, 10, False)
@@ -82,9 +83,9 @@ def rest_page_city(url_slug_state, state_id, url_slug_city, city_id, url_slug_re
         y_reviews = ""
     rest_cover_photo = RestaurantCoverImage.query.filter_by(restaurant_id=rest.id).all()
     rest_img = RestaurantImages.query.filter_by(restaurant_id=rest.id).all()
-    menu = Menu.query.filter_by(restaurant_id=rest_id).all()
-    section = Section.query.filter_by(restaurant_id=rest_id).all()
-    menu_items = MenuItem.query.filter_by(restaurant_id=rest_id).all()
+    menu = Menu.query.filter_by(restaurant_id=rest_id).order_by(asc(Menu.id)).all()
+    section = Section.query.filter_by(restaurant_id=rest_id).order_by(asc(Section.id)).all()
+    menu_items = MenuItem.query.filter_by(restaurant_id=rest_id).order_by(asc(MenuItem.id)).all()
     item_price = ItemPrice.query.filter_by(restaurant_id=rest_id).all()
     item_addon = ItemAddon.query.filter_by(restaurant_id=rest_id).all()
     return render_template("restaurant/rest_page.html", 
@@ -126,9 +127,12 @@ def search_bar():
     form = SearchForm()
     if form.validate_on_submit():
         zip_ = request.form["search"]
-        new = zip_
-        rest = Restaurant.query.filter(Restaurant.zip_.like(new)).first()
-        print rest.state.url_slug_state
+        zip_ = zip_.split()
+        zip_ = zip_[0]
+        new = zip_.capitalize()
+        print new
+        rest = Restaurant.query.filter(or_(Restaurant.zip_.like(new), Restaurant.city_.like(new))).first()
+        # print rest.state.url_slug_state
         return redirect(url_for('rest.search_result', 
             url_slug_state=rest.state.url_slug_state, 
             state_id=rest.state_id, 
@@ -143,10 +147,13 @@ def search_bar():
 @rest_blueprint.route("/<path:url_slug_state>/<int:state_id>/<path:url_slug_city>/<int:city_id>/<int:page>")
 def search_result(zip_,url_slug_state,state_id,url_slug_city,city_id,page=1):
     form = SearchForm()
+    zip_ = zip_.split()
+    zip_ = zip_[0].capitalize()
     new = zip_[:-1]+"%"
+    print new
     # https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&key=YOUR_API_KEY
     google_maps_api_key = "AIzaSyDYASZaU2ZmgQyOvTkh20SWkhlqyuO9E44"
-    rest = Restaurant.query.filter(Restaurant.zip_.like(new)).order_by(asc(Restaurant.rest_name)).paginate(page, 40, False)
+    rest = Restaurant.query.filter(or_(Restaurant.zip_.like(new), Restaurant.city_.like(new))).order_by(asc(Restaurant.rest_name)).paginate(page, 40, False)
     state_name = State.query.filter_by(id=state_id).one()
     city_name = City.query.filter_by(id=city_id).one()
     rest_cusine = db.session.query(Cusine).distinct()\
