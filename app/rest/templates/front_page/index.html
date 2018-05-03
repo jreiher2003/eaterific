@@ -1,20 +1,26 @@
 {% extends "base/base.html" %}
 {% block content %}
+
+
+<h1>USA</h1>
 <div class="row">
-	<div class="col-md-12">
-		<h1>USA</h1>
-		{% for i in state %}
-			{% if i.id < 52 %}
-				<a href="{{ url_for('rest.state_page',url_slug_state=i.url_slug_state, state_id=i.id) }}">{{ i.name }}</a><br>
-			{% endif %}
-		{% endfor %}
-		<h1>Canada</h1>
-		{% for i in state %}
-			{% if i.id > 51 %}
-				<a href="{{ url_for('rest.state_page',url_slug_state=i.url_slug_state, state_id=i.id) }}">{{ i.name }}</a><br>
-			{% endif %}
-		{% endfor %}
+	{% for i in state %}
+		{% if i.id < 52 %}
+		<div class="col-3">
+			<a href="{{ url_for('rest.state_page',url_slug_state=i.url_slug_state, state_id=i.id) }}">{{ i.name }}</a><br>
 		</div>
-	</div>
+		{% endif %}
+	{% endfor %}
 </div>
+<h1>Canada</h1>
+<div class="row">
+	{% for i in state %}
+		{% if i.id > 51 %}
+		<div class="col-3">
+			<a href="{{ url_for('rest.state_page',url_slug_state=i.url_slug_state, state_id=i.id) }}">{{ i.name }}</a><br>
+		</div>
+		{% endif %}
+	{% endfor %}
+</div>		
+	
 {% endblock %}

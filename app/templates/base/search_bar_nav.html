@@ -3,20 +3,14 @@
 {% elif request.endpoint.endswith('register') %}
 {% elif request.endpoint.endswith('profile') %}
       {% else %}
-<div class="searchbar">
-  <form class="navbar-form" action="{{ url_for('rest.search_bar') }}" method="POST">
-    {{ form.csrf_token }}
-    <div class="form-group">
-      <label class="sr-only">Where to eat</label>
-      <div class="input-group">
-        <span class="input-group-addon">
-          <i class="fa fa-cutlery"></i>
-        </span>
-        {{ render_field(form.search, class="form-control input-lg", placeholder="Enter your address, city, or zip", size="45") }}
+<div class="form-group row">
+  <div class="col-sm-12 d-flex justify-content-center">
+      <form action="{{ url_for('rest.search_bar') }}" method="POST">
+        {{ form.csrf_token }}
+        <label class="sr-only">Where to eat</label>
+        {{ render_field(form.search, class="form-control form-control-lg", placeholder="Enter your address, city, or zip", size="60") }}
         {{ form.submit(class="btn btn-success input-lg") }}
-      </div>
-    </div>
-    <!-- <button type="submit" class="btn btn-success input-lg"><i class="fa fa-search fa-2x"></i> </button> -->
-  </form>
+      </form>
+  </div>
 </div>
 {% endif %}

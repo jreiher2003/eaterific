@@ -1,11 +1,13 @@
 {% extends "base/base.html" %}
 {% block content %}
 <div class="row">
-	<div class="col-md-12">
+	<div class="col-md-6">
 		city_page.html which has restaurants listed<br>
 		{#<h2>{{ city_name }}</h2>
 		<p>number of restaurants: {{ rest_total }}</p>#}
 		{% include "base/city_list.html" %}
+	</div>
+	<div class="col-md-3 col order-first">
 		{% for r in rest_cusine %}
 		    <a href="{{ url_for('rest.page_cusine_city', url_slug_state=url_slug_state, state_id=state_id, url_slug_city=url_slug_city, city_id=city_id, url_slug_cusine=r.url_slug_cusine, cusine_id=r.id) }}">{{ r.name }}</a><br>
 		{% endfor %} 
