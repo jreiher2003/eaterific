@@ -14,7 +14,7 @@ rest_blueprint = Blueprint("rest", __name__, template_folder="templates")
 def index():
     """ front page of site has all the states listed """
     form = SearchForm()
-    state = State.query.all()
+    state = State.query.filter(State.id<52).all()
     return render_template("front_page/index.html",state=state, form=form)
 
 @rest_blueprint.route("/about")
