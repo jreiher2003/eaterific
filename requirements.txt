@@ -32,5 +32,5 @@ rauth==0.7.3
 requests==2.18.1
 six==1.10.0
 slugify==0.0.1
-urllib3==1.21.1
+urllib3==1.26.5
 wsgiref==0.1.2
